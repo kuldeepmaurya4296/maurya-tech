@@ -54,8 +54,8 @@ export const policyData = {
         content: "Maurya Technologies & Services provides software development, product engineering, and related technology services. The specific scope, deliverables, and terms of each project will be defined in a separate agreement or statement of work.",
       },
       {
-        title: "The Maurya Pilot Model",
-        content: "Our Pilot Model allows clients to evaluate our work before making a full commitment. The terms of each pilot engagement, including scope and any applicable fees, will be agreed upon before the pilot begins.",
+        title: "Build First, Pay Later (Pilot Model)",
+        content: "Our unique engagement model prioritizes your trust. We start by building the initial User Interface (UI) and core components to demonstrate our capability and ensure your satisfaction. This initial work is hosted and shared on a 'maurya-tech.com' subdomain for your review. We only request an advance payment to proceed to the next development phase once you are satisfied with this initial delivery. If you are not satisfied, you are under no obligation to pay.",
       },
       {
         title: "Intellectual Property",
