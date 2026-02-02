@@ -5,7 +5,7 @@ export const contactData = {
     description: "You bring the idea. We bring the execution. Start your risk-free pilot today.",
   },
   info: {
-    email: "contact@maurya-tech.com",
+    email: "kuldeepmaurya4296@gmail.com",
     phone: "+91 6263638053",
     whatsapp: "+91 6263638053",
     website: "https://maurya-tech.com",
