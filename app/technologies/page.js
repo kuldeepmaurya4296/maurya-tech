@@ -3,8 +3,12 @@ import { TechnologiesPage } from '@/components/pages/technologies/TechnologiesPa
 import { technologyData } from '@/data/technologyData';
 
 export const metadata = {
-    title: 'Technologies | Maurya Tech',
-    description: 'Explore the cutting-edge technologies we use to build scalable and robust solutions.',
+    title: 'Technologies',
+    description: 'Tech Stack: We use cutting-edge technologies like React, Next.js, Node.js, Python, Flutter, and AWS.',
+    alternates: {
+        canonical: '/technologies',
+    },
+    keywords: ['ReactJS Development', 'Next.js Experts', 'Node.js Backend', 'Flutter Apps', 'Cloud Technologies'],
 }
 
 export default function Technologies() {

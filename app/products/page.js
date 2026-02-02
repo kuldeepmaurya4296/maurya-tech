@@ -3,8 +3,12 @@ import { ProductsPage } from '@/components/pages/products/ProductsPage';
 import { productsData } from '@/data/productsData';
 
 export const metadata = {
-    title: 'Our Products | Maurya Tech',
-    description: 'Explore our suite of enterprise-grade products designed to accelerate your business growth.',
+    title: 'Products',
+    description: 'Our Products: Ready-to-deploy software solutions including HRMS, CRM, and E-commerce platforms.',
+    alternates: {
+        canonical: '/products',
+    },
+    keywords: ['SaaS Products', 'HRMS Software', 'CRM Solutions', 'Business Software', 'Ready Made App'],
 }
 
 export default function Products() {

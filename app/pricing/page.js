@@ -3,8 +3,12 @@ import { PricingPage } from '@/components/pages/pricing/PricingPage';
 import { pricingData } from '@/data/pricingData';
 
 export const metadata = {
-    title: 'Pricing | Maurya Tech',
-    description: 'Transparent and flexible pricing plans for businesses of all sizes.',
+    title: 'Pricing',
+    description: 'Transparent Pricing Plans: Choose the right plan for your business needs. Web, Mobile, and Marketing packages available.',
+    alternates: {
+        canonical: '/pricing',
+    },
+    keywords: ['Software Development Pricing', 'Web Design Cost', 'App Development Cost', 'Affordable SEO packages'],
 }
 
 export default function Pricing() {

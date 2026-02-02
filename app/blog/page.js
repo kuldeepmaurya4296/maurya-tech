@@ -3,8 +3,12 @@ import { BlogPage } from '@/components/pages/blog/BlogPage';
 import { blogData } from '@/data/blogData';
 
 export const metadata = {
-    title: 'Blog | Maurya Tech',
-    description: 'Insights, updates, and thoughts on technology, innovation, and business growth.',
+    title: 'Blog',
+    description: 'Insights & Updates: Read about software trends, development best practices, and company news.',
+    alternates: {
+        canonical: '/blog',
+    },
+    keywords: ['Tech Blog', 'Software Development Insights', 'Programming Tutorials', 'Tech News', 'Maurya Tech Blog'],
 }
 
 export default function Blog() {

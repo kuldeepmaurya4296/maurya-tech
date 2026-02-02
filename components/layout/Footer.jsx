@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { contactData } from '@/data/contactData';
-import { Mail, Phone, MapPin, Globe } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, Github, Linkedin, Facebook, Instagram } from 'lucide-react';
 
 const footerLinks = {
   solutions: [
@@ -41,6 +41,20 @@ export const Footer = () => {
               <p className="text-sm text-muted-foreground leading-snug max-w-xs">
                 Building high-quality digital products with our risk-free Pilot Model.
               </p>
+              <div className="flex items-center gap-4 pt-2">
+                <a href="https://github.com/kuldeepmaurya4296" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-accent transition-colors">
+                  <Github className="w-5 h-5" />
+                </a>
+                <a href="https://www.linkedin.com/company/maurya-technologies-services" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-accent transition-colors">
+                  <Linkedin className="w-5 h-5" />
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61587191439669" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-accent transition-colors">
+                  <Facebook className="w-5 h-5" />
+                </a>
+                <a href="https://www.instagram.com/maurya_tech_services/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-accent transition-colors">
+                  <Instagram className="w-5 h-5" />
+                </a>
+              </div>
             </div>
 
             {/* Solutions Links */}

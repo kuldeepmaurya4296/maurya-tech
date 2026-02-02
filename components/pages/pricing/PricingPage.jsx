@@ -101,14 +101,14 @@ export function PricingPage({ pricingData: serverPricingData }) {
 
 
             {/* Pricing Plans */}
-            <Section className="">
+            <Section className="py-16 md:py-24">
                 <div className="container-custom">
                     <AnimatePresence mode="wait">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            className="max-w-4xl mx-auto"
+                            className="max-w-4xl mx-auto mb-12 md:mb-20"
                         >
                             <div className="text-center mb-6">
                                 <h2 className="font-heading font-bold text-2xl md:text-3xl mb-2">Choose Your Solution</h2>

@@ -3,8 +3,12 @@ import { AboutPage } from '@/components/pages/about/AboutPage';
 import { aboutData } from '@/data/aboutData';
 
 export const metadata = {
-    title: 'About Us | Maurya Tech',
-    description: 'Learn about our mission, vision, and the team driving innovation at Maurya Tech.',
+    title: 'About Us',
+    description: 'Learn about Maurya Technologies, our mission, vision, Pilot Model, and the team driving innovation in software development.',
+    alternates: {
+        canonical: '/about',
+    },
+    keywords: ['About Maurya Tech', 'Maurya Team', 'Software Company History', 'Our Mission', 'Kuldeep Maurya'],
 }
 
 export default function About() {

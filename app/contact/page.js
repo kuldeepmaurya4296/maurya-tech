@@ -3,8 +3,12 @@ import { ContactPage } from '@/components/pages/contact/ContactPage';
 import { contactData } from '@/data/contactData';
 
 export const metadata = {
-    title: 'Contact Us | Maurya Tech',
-    description: 'Get in touch with our team to discuss your project requirements or partnership opportunities.',
+    title: 'Contact Us',
+    description: 'Get in Touch: Start your project with a risk-free pilot. Contact Maurya Technologies today.',
+    alternates: {
+        canonical: '/contact',
+    },
+    keywords: ['Contact Maurya Tech', 'Hire Developers', 'Software Consultation', 'Request a Quote', 'Project Inquiry'],
 }
 
 export default function Contact() {
