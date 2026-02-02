@@ -9,6 +9,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { useState } from "react";
 
+import SmoothScroll from "@/components/providers/SmoothScroll";
+
 export default function Providers({ children }) {
     const [queryClient] = useState(() => new QueryClient());
 
@@ -17,6 +19,7 @@ export default function Providers({ children }) {
             <ThemeProvider>
                 <BrandProvider>
                     <DataProvider>
+                        <SmoothScroll />
                         <TooltipProvider>
                             {children}
                             <Toaster />
