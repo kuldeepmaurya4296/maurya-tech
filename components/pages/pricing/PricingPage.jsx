@@ -30,7 +30,7 @@ export function PricingPage({ pricingData: serverPricingData }) {
     const { pricingData: contextPricingData } = useData();
     const pricingData = serverPricingData || contextPricingData;
     const { title, subtitle, currency, disclaimer, categories, faq } = pricingData;
-    const [selectedCategory, setSelectedCategory] = useState(categories[0]?.id || '');
+    const [selectedCategory, setSelectedCategory] = useState("web_dev");
 
     const activeCategory = categories.find(c => c.id === selectedCategory);
 
@@ -98,76 +98,72 @@ export function PricingPage({ pricingData: serverPricingData }) {
                 </div>
             </section>
 
-            {/* Category Selector */}
-            <Section className="py-12 bg-muted/30">
-                <div className="container-custom">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="max-w-4xl mx-auto"
-                    >
-                        <div className="text-center mb-6">
-                            <h2 className="font-heading font-bold text-2xl md:text-3xl mb-2">Choose Your Solution</h2>
-                            <p className="text-muted-foreground">Select a category to view pricing plans</p>
-                        </div>
 
-                        {/* Mobile Dropdown */}
-                        <div className="md:hidden mb-6">
-                            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                                <SelectTrigger className="w-full h-12">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {categories.map((category) => (
-                                        <SelectItem key={category.id} value={category.id}>
-                                            {category.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        {/* Desktop Category Grid */}
-                        <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-3">
-                            {categories.map((category, index) => {
-                                const isActive = selectedCategory === category.id;
-                                return (
-                                    <motion.button
-                                        key={category.id}
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: index * 0.05 }}
-                                        onClick={() => setSelectedCategory(category.id)}
-                                        className={`
-                      relative px-4 py-3 rounded-xl font-medium transition-all duration-300 cursor-pointer
-                      ${isActive
-                                                ? 'bg-accent text-accent-foreground shadow-lg scale-105'
-                                                : 'bg-card hover:bg-muted border border-border hover:border-accent/50'
-                                            }
-                    `}
-                                    >
-                                        <span className="text-sm">{category.name}</span>
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="categoryPill"
-                                                className="absolute inset-0 rounded-xl bg-accent"
-                                                style={{ zIndex: -1 }}
-                                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                            />
-                                        )}
-                                    </motion.button>
-                                );
-                            })}
-                        </div>
-                    </motion.div>
-                </div>
-            </Section>
 
             {/* Pricing Plans */}
-            <Section className="section-padding">
+            <Section className="">
                 <div className="container-custom">
                     <AnimatePresence mode="wait">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="max-w-4xl mx-auto"
+                        >
+                            <div className="text-center mb-6">
+                                <h2 className="font-heading font-bold text-2xl md:text-3xl mb-2">Choose Your Solution</h2>
+                                <p className="text-muted-foreground">Select a category to view pricing plans</p>
+                            </div>
+
+                            {/* Mobile Dropdown */}
+                            <div className="md:hidden mb-6">
+                                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                                    <SelectTrigger className="w-full h-12">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {categories.map((category) => (
+                                            <SelectItem key={category.id} value={category.id}>
+                                                {category.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {/* Desktop Category Grid */}
+                            <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-3">
+                                {categories.map((category, index) => {
+                                    const isActive = selectedCategory === category.id;
+                                    return (
+                                        <motion.button
+                                            key={category.id}
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ delay: index * 0.05 }}
+                                            onClick={() => setSelectedCategory(category.id)}
+                                            className={`
+                      relative px-4 py-3 rounded-xl font-medium transition-all duration-300 cursor-pointer
+                      ${isActive
+                                                    ? 'bg-accent text-accent-foreground shadow-lg scale-105'
+                                                    : 'bg-card hover:bg-muted border border-border hover:border-accent/50'
+                                                }
+                    `}
+                                        >
+                                            <span className="text-sm">{category.name}</span>
+                                            {isActive && (
+                                                <motion.div
+                                                    layoutId="categoryPill"
+                                                    className="absolute inset-0 rounded-xl bg-accent"
+                                                    style={{ zIndex: -1 }}
+                                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                                />
+                                            )}
+                                        </motion.button>
+                                    );
+                                })}
+                            </div>
+                        </motion.div>
                         {activeCategory && (
                             <motion.div
                                 key={activeCategory.id}
@@ -219,13 +215,13 @@ export function PricingPage({ pricingData: serverPricingData }) {
                                                         </CardDescription>
 
                                                         <div className="pt-6">
-                                                            <div className="flex items-baseline justify-center gap-2 mb-1">
-                                                                <span className="text-5xl font-bold tracking-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+                                                            <div className="flex items-center justify-center gap-1 mb-2 flex-wrap">
+                                                                <span className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground break-all">
                                                                     {currency}{plan.price}
                                                                 </span>
                                                             </div>
-                                                            <div className="text-muted-foreground text-sm">
-                                                                per {plan.period}
+                                                            <div className="text-muted-foreground text-sm font-medium">
+                                                                {plan.period === "starts at" ? "starts at" : `per ${plan.period}`}
                                                             </div>
                                                         </div>
                                                     </CardHeader>
@@ -271,27 +267,18 @@ export function PricingPage({ pricingData: serverPricingData }) {
                         )}
                     </AnimatePresence>
                 </div>
-            </Section>
-
-            {/* Disclaimer */}
-            <Section className="py-8 bg-gradient-to-r from-muted/50 to-muted/30">
-                <div className="container-custom">
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        className="flex gap-3 items-start max-w-5xl mx-auto bg-card/50 backdrop-blur-sm border border-border rounded-xl p-6 cursor-default"
-                    >
-                        <Info className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-                        <div>
-                            <h4 className="font-semibold mb-2">Pricing Information</h4>
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                                {disclaimer}
-                            </p>
-                        </div>
-                    </motion.div>
+                <div className="flex gap-3 items-start max-w-5xl mx-auto bg-card/50 backdrop-blur-sm  rounded-xl  cursor-default pt-12"
+                >
+                    <Info className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
+                    <div>
+                        <h4 className="font-semibold mb-2">Pricing Information</h4>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                            {disclaimer}
+                        </p>
+                    </div>
                 </div>
             </Section>
+
 
             {/* FAQ Section */}
             <Section className="section-padding bg-gradient-to-b from-muted/30 to-background">

@@ -5,7 +5,7 @@ import { Layout } from '@/components/layout';
 import { Section, SectionHeader, FeatureCard, ProcessStep, CTASection, TestimonialCard } from '@/components/sections';
 import { useData } from '@/contexts/DataContext';
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, Users, Building2, Briefcase, UserCheck, HeartHandshake, GraduationCap } from 'lucide-react';
 import { AnimatedBackground, CursorEffect, GradientShimmer } from '@/components/effects';
 import AdvertisementDialog from '@/components/AdvertisementDialog';
 
@@ -118,6 +118,46 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
                     </div>
                 </div>
             </section>
+
+
+            {/* Connect Section */}
+            <Section className="bg-muted/30 py-16">
+                <SectionHeader
+                    title={homeData.connect?.title || "Start Your Journey With Us"}
+                    subtitle={homeData.connect?.subtitle || "Connect & Collaborate"}
+                    description={homeData.connect?.description || "Whether you're looking for solutions, partnerships, or career growth, we welcome everyone."}
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {homeData.connect?.items.map((item, index) => {
+                        const iconMap = {
+                            "Users": Users,
+                            "Building2": Building2,
+                            "Briefcase": Briefcase,
+                            "UserCheck": UserCheck,
+                            "HeartHandshake": HeartHandshake,
+                            "GraduationCap": GraduationCap
+                        };
+                        const Icon = iconMap[item.icon] || Users;
+
+                        return (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: index * 0.1 }}
+                                className="group p-4 bg-card rounded-2xl border border-border hover:border-accent/50 hover:shadow-xl transition-all duration-300 text-center flex flex-col items-center h-full"
+                            >
+                                <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                    <Icon className="w-7 h-7 text-accent" />
+                                </div>
+                                <h3 className="font-heading font-semibold text-xl mb-3 group-hover:text-accent transition-colors">{item.title}</h3>
+                                <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
+                            </motion.div>
+                        );
+                    })}
+                </div>
+            </Section>
 
             {/* Problem Section */}
             <Section variant="muted">

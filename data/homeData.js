@@ -23,6 +23,43 @@ export const homeData = {
       { value: "100%", label: "Client Satisfaction" },
     ],
   },
+  connect: {
+    title: "Start Your Journey With Us",
+    subtitle: "Connect & Collaborate",
+    description: "Whether you're looking for solutions, partnerships, or career growth, we welcome everyone.",
+    items: [
+      {
+        icon: "Users",
+        title: "Direct Client",
+        desc: "Transform your vision into reality with our tailored software solutions.",
+      },
+      {
+        icon: "Building2",
+        title: "Company",
+        desc: "Partner with us for strategic B2B collaboration and mutual growth.",
+      },
+      {
+        icon: "Briefcase",
+        title: "Sales Partner",
+        desc: "Join our network and earn attractive commissions through referrals.",
+      },
+      {
+        icon: "UserCheck",
+        title: "Freelancer",
+        desc: "Share your projects, find collaborators, or work on flexible opportunities. Contact us to connect.",
+      },
+      {
+        icon: "HeartHandshake",
+        title: "Contributor",
+        desc: "Support our open-source initiatives and give back to the community.",
+      },
+      {
+        icon: "GraduationCap",
+        title: "Career Seeker",
+        desc: "Explore opportunities to launch or advance your career with us.",
+      },
+    ],
+  },
   problem: {
     title: "Our Guarantee",
     subtitle: "We eliminate risks and deliver excellence through:",
