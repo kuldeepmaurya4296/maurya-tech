@@ -1,6 +1,6 @@
 import React from 'react';
 import { ContactPage } from '@/components/pages/contact/ContactPage';
-import { contactData } from '@/data/contactData';
+import { contacts as contactData } from '@/data/contacts';
 
 export const metadata = {
     title: 'Contact Us',

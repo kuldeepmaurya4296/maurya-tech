@@ -1,6 +1,6 @@
 import React from 'react';
 import { BlogPage } from '@/components/pages/blog/BlogPage';
-import { blogData } from '@/data/blogData';
+import { posts as blogData } from '@/data/posts';
 
 export const metadata = {
     title: 'Blog',

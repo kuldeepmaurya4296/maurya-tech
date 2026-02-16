@@ -2,7 +2,7 @@ import React from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { SEOHead } from '@/components/SEOHead';
-import { seoData } from '@/data/seoData';
+import { seo as seoData } from '@/data/seo';
 
 
 

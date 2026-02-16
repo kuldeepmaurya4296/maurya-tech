@@ -1,6 +1,6 @@
 import React from 'react';
 import { CareersPage } from '@/components/pages/careers/CareersPage';
-import { jobsData } from '@/data/jobsData';
+import { jobs as jobsData } from '@/data/jobs';
 
 export const metadata = {
     title: 'Careers',

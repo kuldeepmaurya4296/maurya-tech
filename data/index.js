@@ -1,21 +1,18 @@
 // Central data export - import all data from here
-export * from './themeData';
-export * from './homeData';
-export * from './aboutData';
-export * from './servicesData';
-export * from './blogData';
-export * from './jobsData';
-export * from './projectsData';
-export * from './technologyData';
-export * from './contactData';
-export * from './policyData';
-export * from './seoData';
-export * from './clientData';
-export * from './adsData';
-export * from './pricingData';
-export * from './productsData';
-export * from './brandData';
-export * from './advertisementData';
-
-
-
+export * from './themes';
+export * from './home';
+export * from './about';
+export * from './services';
+export * from './posts';
+export * from './jobs';
+export * from './projects';
+export * from './technologies';
+export * from './contacts';
+export * from './policies';
+export * from './seo';
+export * from './clients';
+export * from './ads';
+export * from './plans';
+export * from './products';
+export * from './brands';
+export * from './advertisements';

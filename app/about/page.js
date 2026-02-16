@@ -1,6 +1,6 @@
 import React from 'react';
 import { AboutPage } from '@/components/pages/about/AboutPage';
-import { aboutData } from '@/data/aboutData';
+import { about as aboutData } from '@/data/about';
 
 export const metadata = {
     title: 'About Us',

@@ -1,7 +1,7 @@
 import React from 'react';
 import { HomePage } from '@/components/pages/home/HomePage';
-import { homeData } from '@/data/homeData';
-import { clientData } from '@/data/clientData';
+import { home as homeData } from '@/data/home';
+import { clients as clientData } from '@/data/clients';
 
 export const metadata = {
   title: 'Home',

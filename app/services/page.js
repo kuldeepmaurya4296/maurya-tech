@@ -1,6 +1,6 @@
 import React from 'react';
 import { ServicesPage } from '@/components/pages/services/ServicesPage';
-import { servicesData } from '@/data/servicesData';
+import { services as servicesData } from '@/data/services';
 
 export const metadata = {
     title: 'Services',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { TechnologiesPage } from '@/components/pages/technologies/TechnologiesPage';
-import { technologyData } from '@/data/technologyData';
+import { technologies as technologyData } from '@/data/technologies';
 
 export const metadata = {
     title: 'Technologies',

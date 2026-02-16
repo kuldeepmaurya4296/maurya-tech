@@ -1,6 +1,6 @@
 import React from 'react';
 import { ProductsPage } from '@/components/pages/products/ProductsPage';
-import { productsData } from '@/data/productsData';
+import { products as productsData } from '@/data/products';
 
 export const metadata = {
     title: 'Products',

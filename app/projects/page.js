@@ -1,6 +1,6 @@
 import React from 'react';
 import { ProjectsPage } from '@/components/pages/projects/ProjectsPage';
-import { projectsData } from '@/data/projectsData';
+import { projects as projectsData } from '@/data/projects';
 
 export const metadata = {
     title: 'Projects',

@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { themes, defaultTheme } from '@/data/themeData';
+import { themes, defaultTheme } from '@/data/themes';
 
 
 

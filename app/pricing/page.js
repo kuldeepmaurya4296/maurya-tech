@@ -1,6 +1,6 @@
 import React from 'react';
 import { PricingPage } from '@/components/pages/pricing/PricingPage';
-import { pricingData } from '@/data/pricingData';
+import { plans as pricingData } from '@/data/plans';
 
 export const metadata = {
     title: 'Pricing',

@@ -1,19 +1,19 @@
 "use client";
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { homeData as initialHomeData } from '@/data/homeData';
-import { aboutData as initialAboutData } from '@/data/aboutData';
-import { servicesData as initialServicesData } from '@/data/servicesData';
-import { blogData as initialBlogData } from '@/data/blogData';
-import { jobsData as initialJobsData } from '@/data/jobsData';
-import { projectsData as initialProjectsData } from '@/data/projectsData';
-import { technologyData as initialTechnologyData } from '@/data/technologyData';
-import { contactData as initialContactData } from '@/data/contactData';
-import { policyData as initialPolicyData } from '@/data/policyData';
-import { seoData as initialSeoData } from '@/data/seoData';
-import { clientData as initialClientData } from '@/data/clientData';
-import { advertisementData as initialAdsData } from '@/data/advertisementData';
-import { productsData as initialProductsData } from '@/data/productsData';
-import { pricingData as initialPricingData } from '@/data/pricingData';
+import { home as initialHomeData } from '@/data/home';
+import { about as initialAboutData } from '@/data/about';
+import { services as initialServicesData } from '@/data/services';
+import { posts as initialBlogData } from '@/data/posts';
+import { jobs as initialJobsData } from '@/data/jobs';
+import { projects as initialProjectsData } from '@/data/projects';
+import { technologies as initialTechnologyData } from '@/data/technologies';
+import { contacts as initialContactData } from '@/data/contacts';
+import { policies as initialPolicyData } from '@/data/policies';
+import { seo as initialSeoData } from '@/data/seo';
+import { clients as initialClientData } from '@/data/clients';
+import { advertisements as initialAdsData } from '@/data/advertisements';
+import { products as initialProductsData } from '@/data/products';
+import { plans as initialPricingData } from '@/data/plans';
 
 
 

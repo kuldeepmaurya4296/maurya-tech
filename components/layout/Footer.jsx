@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
-import { contactData } from '@/data/contactData';
+import { contacts as contactData } from '@/data/contacts';
 import { Mail, Phone, MapPin, Globe, Github, Linkedin, Facebook, Instagram } from 'lucide-react';
 
 const footerLinks = {
@@ -138,13 +138,7 @@ export const Footer = () => {
               </Link>
             </div>
 
-            <Link
-              href="/admin"
-              className="hidden md:inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-accent transition-colors opacity-70 hover:opacity-100"
-            >
-              <Globe className="w-3 h-3" />
-              Admin
-            </Link>
+
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { brandData as initialBrandData } from '@/data/brandData';
+import { brands as initialBrandData } from '@/data/brands';
 
 const BrandContext = createContext(undefined);
 

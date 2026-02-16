@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from 'react';
-import { seoData } from '@/data/seoData';
+import { seo as seoData } from '@/data/seo';
 
 
 

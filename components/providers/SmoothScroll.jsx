@@ -1,15 +1,10 @@
 'use client';
 import { useEffect } from 'react';
 import Lenis from 'lenis';
-import { usePathname } from 'next/navigation';
+
 
 export default function SmoothScroll() {
-    const pathname = usePathname();
-    const isAdmin = pathname?.startsWith('/admin');
-
     useEffect(() => {
-        if (isAdmin) return;
-
         const lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -31,7 +26,7 @@ export default function SmoothScroll() {
         return () => {
             lenis.destroy();
         };
-    }, [isAdmin]);
+    }, []);
 
     return null;
 }

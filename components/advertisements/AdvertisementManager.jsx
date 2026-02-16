@@ -7,7 +7,7 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useData } from '@/contexts/DataContext';
-import { advertisementData } from '@/data/advertisementData';
+import { advertisements as advertisementData } from '@/data/advertisements';
 
 const AdDialog = ({ ad, onClose, open }) => {
   return (

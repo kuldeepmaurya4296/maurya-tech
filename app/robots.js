@@ -3,7 +3,7 @@ export default function robots() {
         rules: {
             userAgent: '*',
             allow: '/',
-            disallow: '/admin/',
+            allow: '/',
         },
         sitemap: 'https://maurya-tech.com/sitemap.xml',
     }
