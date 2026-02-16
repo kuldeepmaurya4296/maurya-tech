@@ -2,15 +2,13 @@
 import React, { useState } from 'react';
 import { Layout } from '@/components/layout';
 import { Section, CTASection } from '@/components/sections';
-import { useData } from '@/contexts/DataContext';
+import { projects as projectsData } from '@/data/projects';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Check, ExternalLink } from 'lucide-react';
 
-export const ProjectsPage = ({ projectsData: serverProjectsData }) => {
-    const { projectsData: contextProjectsData } = useData();
-    const projectsData = serverProjectsData || contextProjectsData;
+export const ProjectsPage = () => {
     const { hero, categories, projects, pilot } = projectsData;
     const [activeCategory, setActiveCategory] = useState('All');
 
@@ -113,7 +111,7 @@ export const ProjectsPage = ({ projectsData: serverProjectsData }) => {
                                 </p>
 
                                 <div className="flex flex-wrap gap-2 mb-4">
-                                    {project.technologies.slice(0, 4).map((tech, i) => (
+                                    {project.techStack && Object.values(project.techStack).flat().slice(0, 4).map((tech, i) => (
                                         <span
                                             key={i}
                                             className="px-2 py-1 text-xs font-medium bg-muted text-muted-foreground rounded-md"

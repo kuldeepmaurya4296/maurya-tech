@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Layout } from '@/components/layout';
-import { useData } from '@/contexts/DataContext';
+import { projects } from '@/data/projects';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,24 +14,56 @@ import {
     Calendar,
     Clock,
     User,
+    Users,
     ChevronLeft,
     ChevronRight,
     Monitor,
-    Smartphone
+    Smartphone,
+    Layers,
+    Code2,
+    Trophy,
+    LayoutDashboard,
+    Plane,
+    Database,
+    Shield,
+    Zap,
+    BarChart3,
+    MessageSquare,
+    Globe,
+    School,
+    Building,
+    Heart,
+    Activity,
+    Cpu,
+    Server,
+    Code
 } from 'lucide-react';
+
+const iconMap = {
+    LayoutDashboard,
+    Users,
+    Plane,
+    Database,
+    Shield,
+    Zap,
+    BarChart3,
+    MessageSquare,
+    Globe,
+    School,
+    Building,
+    Heart,
+    Activity,
+    Cpu,
+    Server,
+    Code
+};
 
 export const ProjectDetailPage = () => {
     const params = useParams();
     const slug = params?.slug;
     const router = useRouter();
-    const { projectsData } = useData();
 
-    // Ensure projectsData is loaded
-    if (!projectsData || !projectsData.projects) {
-        return null;
-    }
-
-    const project = projectsData.projects.find(p => p.slug === slug);
+    const project = projects.projects.find(p => p.slug === slug);
 
     const [activeDesktopIndex, setActiveDesktopIndex] = useState(0);
     const [activeMobileIndex, setActiveMobileIndex] = useState(0);
@@ -91,7 +123,7 @@ export const ProjectDetailPage = () => {
                         </h1>
 
                         <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-                            {project.fullDescription}
+                            {project.shortDescription}
                         </p>
 
                         <div className="flex flex-wrap gap-6 mb-8">
@@ -100,6 +132,13 @@ export const ProjectDetailPage = () => {
                                     <User className="w-4 h-4 text-accent" />
                                     <span className="text-muted-foreground">Client:</span>
                                     <span className="font-medium">{project.client}</span>
+                                </div>
+                            )}
+                            {project.role && (
+                                <div className="flex items-center gap-2 text-sm">
+                                    <Code2 className="w-4 h-4 text-accent" />
+                                    <span className="text-muted-foreground">Role:</span>
+                                    <span className="font-medium">{project.role}</span>
                                 </div>
                             )}
                             {project.duration && (
@@ -118,7 +157,7 @@ export const ProjectDetailPage = () => {
                             )}
                         </div>
 
-                        {project.liveLink && (
+                        {project.liveLink && project.liveLink !== '#' && (
                             <Button
                                 size="lg"
                                 className="bg-accent text-accent-foreground hover:bg-accent/90"
@@ -132,52 +171,26 @@ export const ProjectDetailPage = () => {
                 </div>
             </section>
 
-            {/* Thumbnail */}
-            {project.thumbnail && (
-                <section className="py-12 bg-muted/30">
-                    <div className="container-custom">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="relative rounded-2xl overflow-hidden shadow-2xl"
-                        >
-                            <img
-                                src={project.thumbnail}
-                                alt={project.title}
-                                className="w-full h-auto object-cover aspect-video"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-                        </motion.div>
-                    </div>
-                </section>
-            )}
-
             {/* Desktop Screenshots Carousel */}
             {project.desktopImages && project.desktopImages.length > 0 && (
-                <section className="py-16">
+                <section className="py-8">
                     <div className="container-custom">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                         >
-                            <div className="flex items-center gap-3 mb-8">
-                                <Monitor className="w-6 h-6 text-accent" />
-                                <h2 className="text-2xl md:text-3xl font-heading font-bold">Desktop View</h2>
-                            </div>
-
                             <div className="relative">
-                                <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-card border border-border">
+                                <div className="relative rounded-xl overflow-hidden shadow-2xl bg-card border border-border">
                                     {/* Browser Chrome */}
-                                    <div className="h-10 bg-muted flex items-center px-4 gap-2 border-b border-border">
+                                    <div className="h-8 bg-muted flex items-center px-4 gap-2 border-b border-border">
                                         <div className="flex gap-1.5">
-                                            <div className="w-3 h-3 rounded-full bg-destructive/50" />
-                                            <div className="w-3 h-3 rounded-full bg-amber-500/50" />
-                                            <div className="w-3 h-3 rounded-full bg-green-500/50" />
+                                            <div className="w-2.5 h-2.5 rounded-full bg-destructive/50" />
+                                            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50" />
+                                            <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
                                         </div>
                                         <div className="flex-1 mx-4">
-                                            <div className="bg-background/50 rounded-md h-6 px-3 flex items-center text-xs text-muted-foreground max-w-md">
+                                            <div className="bg-background/50 rounded-md h-5 px-3 flex items-center text-[10px] text-muted-foreground max-w-md truncate">
                                                 {project.liveLink || 'https://project-demo.com'}
                                             </div>
                                         </div>
@@ -187,7 +200,7 @@ export const ProjectDetailPage = () => {
                                         <motion.img
                                             key={activeDesktopIndex}
                                             initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
+                                            animate={{ opacity: 1, transition: { duration: 0.3 } }}
                                             exit={{ opacity: 0 }}
                                             src={project.desktopImages[activeDesktopIndex]}
                                             alt={`${project.title} desktop view ${activeDesktopIndex + 1}`}
@@ -201,195 +214,165 @@ export const ProjectDetailPage = () => {
                                     <>
                                         <button
                                             onClick={prevDesktop}
-                                            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-colors"
+                                            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-colors z-10"
                                         >
                                             <ChevronLeft className="w-6 h-6" />
                                         </button>
                                         <button
                                             onClick={nextDesktop}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-colors"
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-colors z-10"
                                         >
                                             <ChevronRight className="w-6 h-6" />
                                         </button>
                                     </>
                                 )}
                             </div>
-
-                            {/* Dots */}
-                            {project.desktopImages.length > 1 && (
-                                <div className="flex justify-center gap-2 mt-6">
-                                    {project.desktopImages.map((_, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => setActiveDesktopIndex(index)}
-                                            className={`w-2 h-2 rounded-full transition-colors ${index === activeDesktopIndex ? 'bg-accent' : 'bg-muted-foreground/30'
-                                                }`}
-                                        />
-                                    ))}
-                                </div>
-                            )}
                         </motion.div>
                     </div>
                 </section>
             )}
 
-            {/* Mobile Screenshots Carousel */}
-            {project.mobileImages && project.mobileImages.length > 0 && (
-                <section className="py-16 bg-muted/30">
-                    <div className="container-custom">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                        >
-                            <div className="flex items-center gap-3 mb-8">
-                                <Smartphone className="w-6 h-6 text-accent" />
-                                <h2 className="text-2xl md:text-3xl font-heading font-bold">Mobile View</h2>
-                            </div>
-
-                            <div className="flex justify-center">
-                                <div className="relative max-w-xs">
-                                    {/* Phone Frame */}
-                                    <div className="relative rounded-[3rem] overflow-hidden shadow-2xl bg-card border-8 border-foreground/10">
-                                        {/* Notch */}
-                                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-foreground/10 rounded-b-2xl z-10" />
-
-                                        <AnimatePresence mode="wait">
-                                            <motion.img
-                                                key={activeMobileIndex}
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                exit={{ opacity: 0 }}
-                                                src={project.mobileImages[activeMobileIndex]}
-                                                alt={`${project.title} mobile view ${activeMobileIndex + 1}`}
-                                                className="w-full aspect-[9/19] object-cover"
-                                            />
-                                        </AnimatePresence>
-                                    </div>
-
-                                    {/* Navigation */}
-                                    {project.mobileImages.length > 1 && (
-                                        <>
-                                            <button
-                                                onClick={prevMobile}
-                                                className="absolute -left-16 top-1/2 -translate-y-1/2 p-3 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-colors"
-                                            >
-                                                <ChevronLeft className="w-6 h-6" />
-                                            </button>
-                                            <button
-                                                onClick={nextMobile}
-                                                className="absolute -right-16 top-1/2 -translate-y-1/2 p-3 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-colors"
-                                            >
-                                                <ChevronRight className="w-6 h-6" />
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Dots */}
-                            {project.mobileImages.length > 1 && (
-                                <div className="flex justify-center gap-2 mt-6">
-                                    {project.mobileImages.map((_, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => setActiveMobileIndex(index)}
-                                            className={`w-2 h-2 rounded-full transition-colors ${index === activeMobileIndex ? 'bg-accent' : 'bg-muted-foreground/30'
-                                                }`}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                        </motion.div>
-                    </div>
-                </section>
-            )}
-
-            {/* Project Details */}
-            <section className="py-16">
+            {/* Problem & Solution */}
+            <section className="py-20 bg-muted/20">
                 <div className="container-custom">
-                    <div className="grid lg:grid-cols-3 gap-8">
-                        {/* Challenges */}
+                    <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            className="p-6 rounded-2xl bg-destructive/5 border border-destructive/10"
                         >
-                            <h3 className="font-heading font-bold text-xl mb-4 text-destructive">Challenges</h3>
-                            <ul className="space-y-3">
-                                {project.challenges && project.challenges.map((item, i) => (
-                                    <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
-                                        <span className="text-destructive mt-0.5">•</span>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
+                            <h3 className="text-lg font-heading font-semibold text-destructive mb-3">The Problem</h3>
+                            <p className="text-lg text-muted-foreground leading-relaxed">
+                                {project.problem}
+                            </p>
                         </motion.div>
-
-                        {/* Solutions */}
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0, x: 20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: 0.1 }}
-                            className="p-6 rounded-2xl bg-accent/5 border border-accent/10"
                         >
-                            <h3 className="font-heading font-bold text-xl mb-4 text-accent">Solutions</h3>
-                            <ul className="space-y-3">
-                                {project.solutions && project.solutions.map((item, i) => (
-                                    <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
-                                        <span className="text-accent mt-0.5">•</span>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </motion.div>
-
-                        {/* Results */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.2 }}
-                            className="p-6 rounded-2xl bg-accent/5 border border-accent/10"
-                        >
-                            <h3 className="font-heading font-bold text-xl mb-4 text-accent">Results</h3>
-                            <ul className="space-y-3">
-                                {project.results && project.results.map((item, i) => (
-                                    <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
-                                        <Check className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
+                            <h3 className="text-lg font-heading font-semibold text-accent mb-3">The Solution</h3>
+                            <p className="text-lg text-muted-foreground leading-relaxed">
+                                {project.solution}
+                            </p>
                         </motion.div>
                     </div>
                 </div>
             </section>
 
-            {/* Technologies */}
-            <section className="py-16 bg-muted/30">
+            {/* Key Features Grid */}
+            <section className="py-20">
+                <div className="container-custom">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl font-heading font-bold mb-4">Key Features</h2>
+                        <p className="text-muted-foreground max-w-2xl mx-auto">
+                            Detailed breakdown of the core functionalities implemented in this project.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {project.keyFeatures && project.keyFeatures.map((feature, idx) => {
+                            const Icon = iconMap[feature.icon] || Code2;
+                            return (
+                                <motion.div
+                                    key={idx}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: idx * 0.1 }}
+                                    className="p-6 rounded-xl bg-card border border-border hover:border-accent/40 hover:bg-accent/5 transition-all group"
+                                >
+                                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors">
+                                        <Icon className="w-6 h-6 text-primary group-hover:text-accent transition-colors" />
+                                    </div>
+                                    <h4 className="font-heading font-bold text-lg mb-2">{feature.title}</h4>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">
+                                        {feature.description}
+                                    </p>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            {/* Mobile Showcase & Tech Stack */}
+            <section className="py-20 bg-muted/30">
+                <div className="container-custom">
+                    <div className="grid lg:grid-cols-2 gap-16 items-center">
+                        {/* Mobile Images */}
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            className="flex justify-center gap-8"
+                        >
+                            {project.mobileImages && project.mobileImages.slice(0, 2).map((img, idx) => (
+                                <div key={idx} className={`relative rounded-[2.5rem] overflow-hidden shadow-2xl bg-black border-4 border-gray-800 ${idx === 1 ? 'mt-12' : ''}`}>
+                                    <div className="absolute top-0 inset-x-0 h-6 bg-black z-10 rounded-t-[2.5rem]">
+                                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-b-xl" />
+                                    </div>
+                                    <img src={img} alt="Mobile View" className="w-[260px] h-[540px] object-cover" />
+                                </div>
+                            ))}
+                        </motion.div>
+
+                        {/* Tech Stack */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                        >
+                            <div className="flex items-center gap-3 mb-6">
+                                <Layers className="w-6 h-6 text-accent" />
+                                <h2 className="text-3xl font-heading font-bold">Tech Stack</h2>
+                            </div>
+                            <p className="text-muted-foreground mb-8">
+                                Built with modern, scalable technologies to ensure performance and reliability.
+                            </p>
+
+                            <div className="space-y-6">
+                                {project.techStack && Object.entries(project.techStack).map(([category, techs], idx) => (
+                                    <div key={idx}>
+                                        <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/70 mb-3">
+                                            {category}
+                                        </h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {techs.map((tech) => (
+                                                <Badge key={tech} variant="secondary" className="px-3 py-1 bg-background border border-border">
+                                                    {tech}
+                                                </Badge>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Results/Impact */}
+            <section className="py-20">
                 <div className="container-custom">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-center"
+                        className="max-w-3xl mx-auto text-center"
                     >
-                        <h2 className="text-2xl md:text-3xl font-heading font-bold mb-8">Technologies Used</h2>
-                        <div className="flex flex-wrap justify-center gap-3">
-                            {project.technologies && project.technologies.map((tech, index) => (
-                                <motion.span
-                                    key={tech}
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: index * 0.05 }}
-                                    className="px-6 py-3 text-sm font-medium bg-card border border-border rounded-full hover:border-accent/50 transition-colors"
-                                >
-                                    {tech}
-                                </motion.span>
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-6">
+                            <Trophy className="w-8 h-8 text-accent" />
+                        </div>
+                        <h2 className="text-3xl font-heading font-bold mb-8">Project Impact</h2>
+                        <div className="grid gap-6">
+                            {project.results && project.results.map((result, idx) => (
+                                <div key={idx} className="flex items-center gap-4 text-left p-4 rounded-lg bg-card border border-border">
+                                    <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
+                                        <Check className="w-5 h-5 text-green-500" />
+                                    </div>
+                                    <span className="text-lg text-foreground/90">{result}</span>
+                                </div>
                             ))}
                         </div>
                     </motion.div>
@@ -397,33 +380,19 @@ export const ProjectDetailPage = () => {
             </section>
 
             {/* CTA */}
-            <section className="py-20">
-                <div className="container-custom">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-center max-w-2xl mx-auto"
-                    >
-                        <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
-                            Interested in a Similar Project?
-                        </h2>
-                        <p className="text-muted-foreground text-lg mb-8">
-                            Let's discuss how we can bring your vision to life with the same level of quality and expertise.
-                        </p>
-                        <div className="flex flex-wrap justify-center gap-4">
-                            <Link href="/contact">
-                                <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
-                                    Start a Conversation
-                                </Button>
-                            </Link>
-                            <Link href="/projects">
-                                <Button size="lg" variant="outline">
-                                    View More Projects
-                                </Button>
-                            </Link>
-                        </div>
-                    </motion.div>
+            <section className="py-20 bg-accent text-accent-foreground">
+                <div className="container-custom text-center">
+                    <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">
+                        Ready to Build Your Success Story?
+                    </h2>
+                    <p className="text-accent-foreground/80 text-lg max-w-2xl mx-auto mb-8">
+                        Let's apply the same level of engineering excellence to your next project.
+                    </p>
+                    <Link href="/contact">
+                        <Button size="lg" variant="secondary" className="text-accent font-bold">
+                            Start Your Pilot
+                        </Button>
+                    </Link>
                 </div>
             </section>
         </Layout>
