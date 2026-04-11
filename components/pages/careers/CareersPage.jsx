@@ -161,9 +161,9 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                                     </span>
                                 ))}
                             </div>
-                            <Link href="/contact">
+                            <Link href={`/careers/${job.id}`}>
                                 <Button className="bg-accent text-accent-foreground hover:bg-accent/90">
-                                    Apply Now
+                                    View Details & Apply
                                     <ArrowRight className="w-4 h-4 ml-2" />
                                 </Button>
                             </Link>
