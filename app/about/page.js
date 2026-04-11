@@ -1,6 +1,10 @@
 import React from 'react';
 import { AboutPage } from '@/components/pages/about/AboutPage';
 import { about as aboutData } from '@/data/about';
+import { seoData } from '@/data/seo-keywords';
+
+// Use all typo and brand permutations for About page
+const aboutKeywords = [...seoData.typos, ...seoData.brands, ...seoData.services];
 
 export const metadata = {
     title: 'About Us',
@@ -8,7 +12,7 @@ export const metadata = {
     alternates: {
         canonical: '/about',
     },
-    keywords: ['About Maurya Tech', 'Maurya Team', 'Software Company History', 'Our Mission', 'Kuldeep Maurya'],
+    keywords: [...aboutKeywords, 'About Maurya Tech', 'Maurya Team', 'Software Company History', 'Our Mission', 'Kuldeep Maurya'],
 }
 
 export default function About() {

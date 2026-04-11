@@ -1,6 +1,7 @@
 import { Inter, Montserrat, Open_Sans, Fira_Code } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
+import { globalKeywordsList, seoData } from "@/data/seo-keywords";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,13 +30,7 @@ export const metadata = {
     template: "%s | Maurya Technologies"
   },
   description: "Maurya Technologies & Services: Your trusted partner for Scalable Software, Web Development, Mobile Apps, and Enterprise Solutions. We build risk-free with our Pilot Model.",
-  keywords: [
-    "Maurya Technologies", "Maurya Tech", "Morya Tech", "Software Development Company",
-    "Web Development", "Mobile App Development", "React Native", "Next.js",
-    "IT Services", "Digital Transformation", "Software Pilot Model",
-    "Hire Developers", "Freelance Developers", "B2B Software Partnership",
-    "Custom Software", "Enterprise Solutions", "Cloud Services"
-  ],
+  keywords: globalKeywordsList,
   authors: [{ name: "Kuldeep Maurya" }, { name: "Maurya Technologies Team" }],
   creator: "Maurya Technologies",
   publisher: "Maurya Technologies",
@@ -85,8 +80,26 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Maurya Technologies",
+    "alternateName": seoData.typos,
+    "url": "https://maurya-tech.com",
+    "logo": "https://maurya-tech.com/logo.png",
+    "sameAs": [
+      // Add social links here
+    ]
+  };
+
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={`${inter.variable} ${montserrat.variable} ${openSans.variable} ${firaCode.variable} antialiased`} suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>

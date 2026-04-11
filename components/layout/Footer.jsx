@@ -3,6 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import { contacts as contactData } from '@/data/contacts';
 import { Mail, Phone, MapPin, Globe, Github, Linkedin, Facebook, Instagram } from 'lucide-react';
+import { seoData } from '@/data/seo-keywords';
 
 const footerLinks = {
   solutions: [
@@ -116,6 +117,25 @@ export const Footer = () => {
               </div>
             </div>
 
+          </div>
+        </div>
+
+        {/* SEO Popular Searches Block */}
+        <div className="border-t border-border/20 bg-card hidden  ">
+          <div className="container-custom py-8 px-6 md:px-10">
+            <h4 className="font-heading font-semibold text-xs uppercase tracking-wider text-muted-foreground/70 mb-3">
+              Areas We Serve & Popular Searches
+            </h4>
+            <p className="text-[11px] leading-relaxed text-muted-foreground/50 text-justify">
+              {[...seoData.services, ...seoData.typos, ...seoData.trending].map((keyword, index) => (
+                <span key={index} className="inline-block mr-2 mb-1">
+                  {keyword}{index !== seoData.services.length + seoData.typos.length + seoData.trending.length - 1 ? ' |' : ''}
+                </span>
+              ))}
+              <span className="block mt-2">
+                We provide expert development services globally, including: {seoData.locations.join(', ')}.
+              </span>
+            </p>
           </div>
         </div>
 

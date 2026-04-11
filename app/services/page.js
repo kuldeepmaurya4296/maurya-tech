@@ -1,6 +1,12 @@
 import React from 'react';
 import { ServicesPage } from '@/components/pages/services/ServicesPage';
 import { services as servicesData } from '@/data/services';
+import { globalKeywordsList } from '@/data/seo-keywords';
+
+// Filter for only service-specific and 'near me' keywords
+const serviceKeywords = globalKeywordsList.filter(k => 
+    k.includes('development') || k.includes('near me') || k.includes('software') || k.includes('service')
+);
 
 export const metadata = {
     title: 'Services',
@@ -8,7 +14,7 @@ export const metadata = {
     alternates: {
         canonical: '/services',
     },
-    keywords: ['Web Development Services', 'App Development', 'Cloud Consulting', 'AI Services', 'Software Outsourcing'],
+    keywords: [...serviceKeywords, 'Web Development Services', 'App Development', 'Cloud Consulting', 'AI Services', 'Software Outsourcing'],
 }
 
 export default function Services() {
