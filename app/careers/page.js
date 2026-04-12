@@ -1,6 +1,7 @@
 import React from 'react';
 import { CareersPage } from '@/components/pages/careers/CareersPage';
 import { jobs as jobsData } from '@/data/jobs';
+import { globalKeywordsList } from '@/data/seo-keywords';
 
 export const metadata = {
     title: 'Careers',
@@ -8,7 +9,7 @@ export const metadata = {
     alternates: {
         canonical: '/careers',
     },
-    keywords: ['Tech Jobs', 'Software Engineer Careers', 'Remote Developer Jobs', 'Hiring Developers', 'Maurya Tech Careers'],
+    keywords: [...globalKeywordsList, 'Tech Jobs', 'Software Engineer Careers', 'Remote Developer Jobs', 'Hiring Developers', 'Maurya Tech Careers'],
 }
 
 export default function Careers() {

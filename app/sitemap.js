@@ -1,3 +1,5 @@
+import { jobs } from '@/data/jobs';
+
 export default function sitemap() {
     const baseUrl = 'https://maurya-tech.com';
     const currentDate = new Date().toISOString();
@@ -20,5 +22,12 @@ export default function sitemap() {
         priority: route === '' ? 1 : 0.8,
     }));
 
-    return routes;
+    const dynamicJobRoutes = jobs.jobs.filter(j => j.isActive).map(job => ({
+        url: `${baseUrl}/careers/${job.id}`,
+        lastModified: currentDate,
+        changeFrequency: 'weekly',
+        priority: 0.7,
+    }));
+
+    return [...routes, ...dynamicJobRoutes];
 }

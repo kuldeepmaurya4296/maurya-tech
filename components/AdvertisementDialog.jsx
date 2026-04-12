@@ -62,7 +62,7 @@ const AdvertisementDialog = () => {
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={setOpen} modal={false}>
             <DialogContent className="sm:max-w-md bg-gradient-to-br from-background to-accent/5 border-accent/20">
                 <DialogHeader>
                     <DialogTitle className="text-center text-2xl font-bold flex flex-col items-center gap-2">

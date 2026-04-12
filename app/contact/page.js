@@ -1,6 +1,7 @@
 import React from 'react';
 import { ContactPage } from '@/components/pages/contact/ContactPage';
 import { contacts as contactData } from '@/data/contacts';
+import { globalKeywordsList } from '@/data/seo-keywords';
 
 export const metadata = {
     title: 'Contact Us',
@@ -8,7 +9,7 @@ export const metadata = {
     alternates: {
         canonical: '/contact',
     },
-    keywords: ['Contact Maurya Tech', 'Hire Developers', 'Software Consultation', 'Request a Quote', 'Project Inquiry'],
+    keywords: [...globalKeywordsList, 'Contact Maurya Tech', 'Hire Developers', 'Software Consultation', 'Request a Quote', 'Project Inquiry'],
 }
 
 export default function Contact() {

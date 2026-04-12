@@ -24,7 +24,7 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
             <CursorEffect />
 
             {/* Enhanced Hero Section with Animations */}
-            <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+            <section className="relative min-h-[100dvh] flex items-center pt-24 pb-16 w-full">
                 {/* Animated Background */}
                 <AnimatedBackground variant="orbs" />
 
@@ -32,7 +32,7 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
                 <div className="absolute inset-0 hero-gradient opacity-90" />
 
                 {/* Grid Pattern */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--hero-text)/0.03)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--hero-text)/0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--hero-text)/0.03)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--hero-text)/0.03)_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none" />
 
                 <div className="container-custom relative z-10 py-12 md:py-20">
                     <div className="max-w-4xl mx-auto text-center">
@@ -232,7 +232,7 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="p-8 bg-muted rounded-2xl sticky top-28 relative overflow-hidden"
+                        className="p-8 bg-muted rounded-2xl sticky top-28 overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent" />
                         <div className="relative z-10">

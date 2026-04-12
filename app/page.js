@@ -29,7 +29,7 @@ export default function Index() {
       '@type': 'ContactPoint',
       telephone: '+91-6263638053',
       contactType: 'sales',
-      email: 'contact@maurya-tech.com'
+      email: 'mauryatech7@gmail.com'
     }
   };
 
