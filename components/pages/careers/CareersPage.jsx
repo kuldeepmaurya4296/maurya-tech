@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Layout } from '@/components/layout';
 import { CTASection } from '@/components/sections';
 import { useData } from '@/contexts/DataContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,19 +14,14 @@ import {
   ArrowRight,
   ArrowDown,
   Search,
-  Filter,
   X,
   Sparkles,
   Zap,
-  Shield,
   TrendingUp,
   Code2,
   Building2,
   CheckCircle2,
   XCircle,
-  Users,
-  Compass,
-  Star,
 } from 'lucide-react';
 
 export const CareersPage = ({ jobsData: serverJobsData }) => {
@@ -78,11 +73,10 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
 
   return (
     <Layout page="careers">
-      {/* 1. HERO SECTION: Ultra-Modern Glow & Bento Hero */}
-      <section className="relative pt-32 pb-20 md:pb-28 overflow-hidden bg-slate-950 text-slate-100">
+      {/* 1. HERO SECTION: Ultra-Modern Light / Dark Adaptive Hero */}
+      <section className="relative pt-32 pb-20 md:pb-28 overflow-hidden bg-background text-foreground border-b border-border/40">
         {/* Background Gradients */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-cyan-500/20 via-blue-600/10 to-transparent blur-3xl pointer-events-none -z-10" />
-        <div className="absolute top-40 right-10 w-96 h-96 bg-purple-500/10 blur-3xl pointer-events-none -z-10" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-accent/15 via-primary/5 to-transparent blur-3xl pointer-events-none -z-10" />
 
         <div className="container-custom relative z-10">
           <div className="max-w-4xl mx-auto text-center">
@@ -90,10 +84,10 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-6 shadow-lg shadow-cyan-500/10 backdrop-blur-md"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/30 text-accent text-xs font-semibold uppercase tracking-wider mb-6 shadow-xs backdrop-blur-md"
             >
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-              <span>We Are Actively Hiring &bull; {activeJobs.length} Open Roles</span>
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <span>We Are Actively Hiring in Bhopal &bull; {activeJobs.length} Open Positions</span>
             </motion.div>
 
             {/* Main Headline */}
@@ -101,10 +95,10 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-extrabold tracking-tight mb-6 leading-[1.15]"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-extrabold tracking-tight mb-6 leading-[1.15] text-foreground"
             >
               Architect Next-Gen Systems.{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-accent to-blue-600 bg-clip-text text-transparent">
                 Accelerate Your Career.
               </span>
             </motion.h1>
@@ -114,10 +108,10 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-base sm:text-lg md:text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto mb-10"
+              className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-10"
             >
-              Join an engineering-first squad building mission-critical SaaS, cloud infrastructure, and mobile applications. All roles follow a high-impact{' '}
-              <strong className="text-slate-200 font-semibold">Hybrid Model</strong> with 3 months intensive in-office mentorship.
+              Join an engineering-first squad building mission-critical SaaS, cloud infrastructure, and mobile applications. All positions follow a{' '}
+              <strong className="text-foreground font-semibold">Hybrid Model in Bhopal, MP</strong> with 3 months intensive in-office mentorship.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -130,9 +124,9 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               <Button
                 size="lg"
                 onClick={scrollToOpenings}
-                className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-8 py-6 rounded-2xl shadow-xl shadow-cyan-500/25 transition hover:scale-[1.02] cursor-pointer w-full sm:w-auto text-sm"
+                className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold px-8 py-6 rounded-2xl shadow-lg shadow-accent/20 transition hover:scale-[1.02] cursor-pointer w-full sm:w-auto text-sm"
               >
-                <span>Explore Open Positions</span>
+                <span>Explore {activeJobs.length} Open Positions</span>
                 <ArrowDown className="w-4 h-4 ml-2 animate-bounce" />
               </Button>
 
@@ -140,9 +134,9 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                 size="lg"
                 variant="outline"
                 onClick={scrollToOpenings}
-                className="border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-200 font-semibold px-8 py-6 rounded-2xl backdrop-blur-md transition hover:scale-[1.02] cursor-pointer w-full sm:w-auto text-sm"
+                className="border-border bg-card/80 hover:bg-muted text-foreground font-semibold px-8 py-6 rounded-2xl backdrop-blur-md transition hover:scale-[1.02] cursor-pointer w-full sm:w-auto text-sm"
               >
-                <Search className="w-4 h-4 mr-2 text-cyan-400" />
+                <Search className="w-4 h-4 mr-2 text-accent" />
                 <span>Search by Tech Stack</span>
               </Button>
             </motion.div>
@@ -152,22 +146,22 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="max-w-2xl mx-auto p-2 sm:p-2.5 bg-slate-900/90 border border-slate-800 rounded-2xl shadow-2xl backdrop-blur-xl"
+              className="max-w-2xl mx-auto p-2 sm:p-2.5 bg-card border border-border rounded-2xl shadow-xl backdrop-blur-xl"
             >
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     placeholder="Search roles e.g. Flutter, Next.js, DevOps, Cyber Security, QA..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-transparent text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none"
+                    className="w-full pl-10 pr-4 py-3 bg-transparent text-xs sm:text-sm text-foreground placeholder-muted-foreground focus:outline-none"
                   />
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-200"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -175,21 +169,21 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                 </div>
                 <Button
                   onClick={scrollToOpenings}
-                  className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs px-5 py-3 rounded-xl cursor-pointer shrink-0"
+                  className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold text-xs px-5 py-3 rounded-xl cursor-pointer shrink-0"
                 >
                   Find Openings
                 </Button>
               </div>
 
               {/* Quick Suggestion Pills */}
-              <div className="flex items-center gap-2 pt-2 px-2 overflow-x-auto text-[11px] text-slate-400 scrollbar-none">
-                <span className="text-slate-500 font-medium shrink-0">Popular:</span>
+              <div className="flex items-center gap-2 pt-2 px-2 overflow-x-auto text-[11px] text-muted-foreground scrollbar-none">
+                <span className="font-medium shrink-0">Popular:</span>
                 {['Flutter', 'Next.js 15', 'DevOps', 'Cyber Security', 'QA Automation'].map(
                   (skill) => (
                     <button
                       key={skill}
                       onClick={() => setFilterSkill(skill)}
-                      className="px-2.5 py-0.5 rounded-full bg-slate-800/80 hover:bg-cyan-500/10 hover:text-cyan-400 border border-slate-700/60 transition cursor-pointer whitespace-nowrap"
+                      className="px-2.5 py-0.5 rounded-full bg-muted/80 hover:bg-accent/10 hover:text-accent border border-border transition cursor-pointer whitespace-nowrap"
                     >
                       {skill}
                     </button>
@@ -200,40 +194,40 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
           </div>
         </div>
 
-        {/* Floating Quick Stats Strip */}
-        <div className="container-custom mt-16 pt-8 border-t border-slate-800/60">
+        {/* Quick Stats Strip */}
+        <div className="container-custom mt-16 pt-8 border-t border-border/60">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto text-center">
-            <div className="p-3 bg-slate-900/40 rounded-xl border border-slate-800/40">
-              <div className="text-xl md:text-2xl font-bold font-heading text-cyan-400">100%</div>
-              <div className="text-xs text-slate-400 mt-0.5">1-on-1 In-Office Mentorship</div>
+            <div className="p-4 bg-card rounded-2xl border border-border shadow-xs">
+              <div className="text-xl md:text-2xl font-bold font-heading text-accent">100%</div>
+              <div className="text-xs text-muted-foreground mt-0.5">1-on-1 In-Office Mentorship</div>
             </div>
-            <div className="p-3 bg-slate-900/40 rounded-xl border border-slate-800/40">
-              <div className="text-xl md:text-2xl font-bold font-heading text-emerald-400">Hybrid</div>
-              <div className="text-xs text-slate-400 mt-0.5">3-Month In-Office Foundation</div>
+            <div className="p-4 bg-card rounded-2xl border border-border shadow-xs">
+              <div className="text-xl md:text-2xl font-bold font-heading text-emerald-600 dark:text-emerald-400">Hybrid</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Bhopal Hub Office Model</div>
             </div>
-            <div className="p-3 bg-slate-900/40 rounded-xl border border-slate-800/40">
-              <div className="text-xl md:text-2xl font-bold font-heading text-blue-400">PPO Track</div>
-              <div className="text-xs text-slate-400 mt-0.5">Performance-Based Full-Time</div>
+            <div className="p-4 bg-card rounded-2xl border border-border shadow-xs">
+              <div className="text-xl md:text-2xl font-bold font-heading text-primary">PPO Track</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Performance-Based Conversion</div>
             </div>
-            <div className="p-3 bg-slate-900/40 rounded-xl border border-slate-800/40">
-              <div className="text-xl md:text-2xl font-bold font-heading text-purple-400">Zero</div>
-              <div className="text-xs text-slate-400 mt-0.5">Micromanagement Policy</div>
+            <div className="p-4 bg-card rounded-2xl border border-border shadow-xs">
+              <div className="text-xl md:text-2xl font-bold font-heading text-purple-600 dark:text-purple-400">Zero</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Micromanagement Policy</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* 2. CULTURE & ENGINEERING DNA BENTO GRID */}
-      <section className="py-20 bg-slate-900/40 border-y border-slate-800/60">
+      <section className="py-20 bg-muted/30 border-y border-border/60">
         <div className="container-custom max-w-6xl">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-cyan-400 text-xs font-semibold uppercase tracking-wider">
+            <span className="text-accent text-xs font-semibold uppercase tracking-wider">
               Engineering Culture
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold font-heading text-white mt-2">
+            <h2 className="text-3xl md:text-4xl font-bold font-heading text-foreground mt-2">
               How We Build & Collaborate
             </h2>
-            <p className="text-sm text-slate-400 mt-2">
+            <p className="text-sm text-muted-foreground mt-2">
               We reject corporate bureaucracy and toxic politics in favor of autonomous craft, speed, and real-world impact.
             </p>
           </div>
@@ -244,27 +238,26 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="p-8 rounded-3xl bg-slate-900/80 border border-cyan-500/20 shadow-xl relative overflow-hidden flex flex-col justify-between"
+              className="p-8 rounded-3xl bg-card border border-accent/20 shadow-lg relative overflow-hidden flex flex-col justify-between"
             >
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-semibold mb-6 border border-cyan-500/30">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-xs font-semibold mb-6 border border-accent/30">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Our Core Principles</span>
                 </div>
-                <h3 className="text-2xl font-bold font-heading text-white mb-6">
+                <h3 className="text-2xl font-bold font-heading text-foreground mb-6">
                   What We Value & Reward
                 </h3>
 
                 <div className="space-y-4">
                   {culture.values.map((val, idx) => (
                     <div key={idx} className="flex items-start gap-3.5">
-                      <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 shrink-0 border border-cyan-500/20">
+                      <div className="p-2 rounded-xl bg-accent/10 text-accent shrink-0 border border-accent/20">
                         <CheckCircle2 className="w-4 h-4" />
                       </div>
                       <div>
-                        <div className="text-sm font-semibold text-slate-200">{val.title}</div>
-                        <div className="text-xs text-slate-400 mt-0.5">
+                        <div className="text-sm font-semibold text-foreground">{val.title}</div>
+                        <div className="text-xs text-muted-foreground mt-0.5">
                           Prioritizing long-term architectural stability and product usability.
                         </div>
                       </div>
@@ -273,7 +266,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-slate-800 text-xs text-cyan-400 font-medium">
+              <div className="mt-8 pt-6 border-t border-border text-xs text-accent font-medium">
                 &rarr; High autonomy with clear, objective accountability.
               </div>
             </motion.div>
@@ -283,27 +276,26 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="p-8 rounded-3xl bg-slate-900/80 border border-rose-500/20 shadow-xl relative overflow-hidden flex flex-col justify-between"
+              className="p-8 rounded-3xl bg-card border border-destructive/20 shadow-lg relative overflow-hidden flex flex-col justify-between"
             >
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-rose-500/10 rounded-full blur-2xl pointer-events-none" />
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 text-xs font-semibold mb-6 border border-rose-500/30">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-destructive/10 text-destructive text-xs font-semibold mb-6 border border-destructive/30">
                   <XCircle className="w-3.5 h-3.5" />
                   <span>Strict Anti-Patterns</span>
                 </div>
-                <h3 className="text-2xl font-bold font-heading text-white mb-6">
+                <h3 className="text-2xl font-bold font-heading text-foreground mb-6">
                   What We Actively Reject
                 </h3>
 
                 <div className="space-y-4">
                   {culture.antiValues.map((val, idx) => (
                     <div key={idx} className="flex items-start gap-3.5">
-                      <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400 shrink-0 border border-rose-500/20">
+                      <div className="p-2 rounded-xl bg-destructive/10 text-destructive shrink-0 border border-destructive/20">
                         <X className="w-4 h-4" />
                       </div>
                       <div>
-                        <div className="text-sm font-semibold text-slate-200">{val.title}</div>
-                        <div className="text-xs text-slate-400 mt-0.5">
+                        <div className="text-sm font-semibold text-foreground">{val.title}</div>
+                        <div className="text-xs text-muted-foreground mt-0.5">
                           Eliminating blockers so you can focus 100% on deep engineering work.
                         </div>
                       </div>
@@ -312,7 +304,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-slate-800 text-xs text-rose-400 font-medium">
+              <div className="mt-8 pt-6 border-t border-border text-xs text-destructive font-medium">
                 &rarr; Zero tolerance for office politics and unproductive meetings.
               </div>
             </motion.div>
@@ -320,45 +312,45 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
         </div>
       </section>
 
-      {/* 3. OPEN POSITIONS SECTION: Modern Cards with Interactive Filters */}
-      <section id="open-positions" className="py-20 md:py-28 scroll-mt-16 bg-slate-950">
+      {/* 3. OPEN POSITIONS SECTION */}
+      <section id="open-positions" className="py-20 md:py-28 scroll-mt-16 bg-background">
         <div className="container-custom max-w-6xl">
           {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
-              <span className="text-cyan-400 text-xs font-semibold uppercase tracking-wider">
+              <span className="text-accent text-xs font-semibold uppercase tracking-wider">
                 Current Opportunities
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold font-heading text-white mt-1">
-                Explore Open Positions
+              <h2 className="text-3xl md:text-4xl font-bold font-heading text-foreground mt-1">
+                Explore Open Positions in Bhopal
               </h2>
-              <p className="text-sm text-slate-400 mt-2">
+              <p className="text-sm text-muted-foreground mt-2">
                 Showing {filteredJobs.length} active opportunities across Mobile, Full-Stack, DevOps, Security & QA.
               </p>
             </div>
 
             {/* Quick Count Badge */}
-            <div className="px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 w-fit">
-              🔥 <span className="text-cyan-400 font-bold">{filteredJobs.length}</span> positions available
+            <div className="px-4 py-2 rounded-xl bg-card border border-border text-xs font-semibold text-foreground w-fit shadow-xs">
+              🔥 <span className="text-accent font-bold">{filteredJobs.length}</span> positions available
             </div>
           </div>
 
           {/* Filter Bar */}
-          <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl mb-10 space-y-4">
+          <div className="p-4 rounded-2xl bg-card border border-border shadow-md mb-10 space-y-4">
             {/* Search Input inside filter bar */}
             <div className="relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Filter by role title or tech stack (e.g. Flutter, Next.js, Docker, Cypress, Penetration Testing)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                className="w-full pl-10 pr-10 py-3 rounded-xl bg-muted/60 border border-border text-xs sm:text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-accent"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-200"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -375,8 +367,8 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                     onClick={() => setSelectedDepartment(dept)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                       selectedDepartment === dept
-                        ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                        : 'bg-slate-800/80 text-slate-400 hover:text-slate-200 border border-slate-700/50'
+                        ? 'bg-accent text-accent-foreground shadow-xs'
+                        : 'bg-muted/70 text-muted-foreground hover:text-foreground border border-border'
                     }`}
                   >
                     {dept}
@@ -392,8 +384,8 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                     onClick={() => setSelectedType(type)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                       selectedType === type
-                        ? 'bg-white text-slate-950 shadow-md'
-                        : 'bg-slate-800/80 text-slate-400 hover:text-slate-200 border border-slate-700/50'
+                        ? 'bg-primary text-primary-foreground shadow-xs'
+                        : 'bg-muted/70 text-muted-foreground hover:text-foreground border border-border'
                     }`}
                   >
                     {type}
@@ -404,9 +396,9 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
 
             {/* Clear Filter Prompt */}
             {(searchQuery || selectedDepartment !== 'All' || selectedType !== 'All') && (
-              <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-xs text-slate-400">
+              <div className="flex items-center justify-between pt-2 border-t border-border text-xs text-muted-foreground">
                 <span>
-                  Filters active &bull; Filtered down to <strong>{filteredJobs.length}</strong> roles
+                  Filters active &bull; Showing <strong>{filteredJobs.length}</strong> matching roles
                 </span>
                 <button
                   onClick={() => {
@@ -414,7 +406,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                     setSelectedDepartment('All');
                     setSelectedType('All');
                   }}
-                  className="text-cyan-400 hover:underline font-semibold cursor-pointer"
+                  className="text-accent hover:underline font-semibold cursor-pointer"
                 >
                   Reset all filters
                 </button>
@@ -425,12 +417,12 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
           {/* Job Listings Grid */}
           <div className="space-y-5">
             {filteredJobs.length === 0 ? (
-              <div className="p-16 text-center bg-slate-900/60 rounded-3xl border border-slate-800 space-y-4">
-                <Search className="w-10 h-10 text-slate-600 mx-auto" />
-                <h4 className="text-xl font-bold font-heading text-white">
+              <div className="p-16 text-center bg-card rounded-3xl border border-border space-y-4">
+                <Search className="w-10 h-10 text-muted-foreground mx-auto" />
+                <h4 className="text-xl font-bold font-heading text-foreground">
                   No Openings Matched Your Filters
                 </h4>
-                <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
                   Try adjusting your search query or selecting a different department category.
                 </p>
                 <Button
@@ -440,7 +432,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                     setSelectedDepartment('All');
                     setSelectedType('All');
                   }}
-                  className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs mt-2"
+                  className="bg-accent text-accent-foreground font-bold text-xs mt-2"
                 >
                   Show All {activeJobs.length} Positions
                 </Button>
@@ -453,46 +445,46 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.04 }}
-                  className="p-6 md:p-8 rounded-3xl bg-slate-900/70 hover:bg-slate-900 border border-slate-800/80 hover:border-cyan-500/40 transition-all duration-300 shadow-xl group"
+                  className="p-6 md:p-8 rounded-3xl bg-card hover:bg-card/90 border border-border hover:border-accent/40 transition-all duration-300 shadow-sm hover:shadow-md group"
                 >
                   {/* Top Row: Department Badge + Type + Experience */}
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent" />
                         {job.department}
                       </span>
-                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-muted text-foreground border border-border">
                         {job.type}
                       </span>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-800/60 text-slate-400 border border-slate-700/50">
-                        {job.experience} Exp
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-muted/60 text-muted-foreground border border-border">
+                        {job.experience}
                       </span>
                     </div>
 
                     {/* Salary / Stipend Badge */}
                     {job.salary && (
-                      <div className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      <div className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
                         💰 {job.salary}
                       </div>
                     )}
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-xl md:text-2xl font-bold font-heading text-white group-hover:text-cyan-400 transition-colors mb-3">
+                  <h3 className="text-xl md:text-2xl font-bold font-heading text-foreground group-hover:text-accent transition-colors mb-3">
                     {job.title}
                   </h3>
 
                   {/* Meta Strip: Location */}
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 mb-4">
-                    <span className="flex items-center gap-1.5 text-slate-300 font-medium">
-                      <Building2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mb-4">
+                    <span className="flex items-center gap-1.5 font-medium text-foreground">
+                      <Building2 className="w-3.5 h-3.5 text-accent shrink-0" />
                       {job.location}
                     </span>
                   </div>
 
                   {/* Description */}
-                  <p className="text-xs md:text-sm text-slate-400 mb-5 leading-relaxed line-clamp-2">
+                  <p className="text-xs md:text-sm text-muted-foreground mb-5 leading-relaxed line-clamp-2">
                     {job.description}
                   </p>
 
@@ -502,7 +494,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                       {job.skills.map((skill, sIdx) => (
                         <span
                           key={sIdx}
-                          className="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-slate-800/80 text-slate-300 border border-slate-700/60 group-hover:border-cyan-500/20 transition"
+                          className="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-muted/80 text-foreground border border-border group-hover:border-accent/30 transition"
                         >
                           {skill}
                         </span>
@@ -511,13 +503,13 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                   )}
 
                   {/* Bottom Action */}
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-800/80">
-                    <span className="text-[11px] text-slate-500 font-mono">
+                  <div className="flex items-center justify-between pt-4 border-t border-border">
+                    <span className="text-[11px] text-muted-foreground font-mono">
                       Fast-track review within 48 hours
                     </span>
 
                     <Link href={`/careers/${job.id || job.slug}`}>
-                      <Button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-cyan-500/15 group-hover:scale-105 transition cursor-pointer">
+                      <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs group-hover:scale-105 transition cursor-pointer">
                         <span>View Details & Apply</span>
                         <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" />
                       </Button>
@@ -531,57 +523,57 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
       </section>
 
       {/* 4. PERKS & BENEFITS GRID */}
-      <section className="py-20 bg-slate-900/50 border-t border-slate-800/60">
+      <section className="py-20 bg-muted/30 border-t border-border/60">
         <div className="container-custom max-w-6xl">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="text-cyan-400 text-xs font-semibold uppercase tracking-wider">
+            <span className="text-accent text-xs font-semibold uppercase tracking-wider">
               Comprehensive Perks
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold font-heading text-white mt-1">
-              Why Join Maurya Technologies?
+            <h2 className="text-3xl md:text-4xl font-bold font-heading text-foreground mt-1">
+              Why Join Maurya Technologies in Bhopal?
             </h2>
-            <p className="text-sm text-slate-400 mt-2">
+            <p className="text-sm text-muted-foreground mt-2">
               We design our compensation and workplace environment to foster deep technical craftsmanship and continuous learning.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/30 transition space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center border border-cyan-500/20">
+            <div className="p-6 rounded-2xl bg-card border border-border hover:border-accent/30 transition space-y-3 shadow-xs">
+              <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center border border-accent/20">
                 <Building2 className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold font-heading text-white">Hybrid Work Culture</h4>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                3 months intensive in-office onboarding & mentorship, followed by flexible hybrid scheduling.
+              <h4 className="text-base font-bold font-heading text-foreground">Hybrid Work Culture</h4>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                3 months intensive in-office onboarding & mentorship in Bhopal, followed by flexible hybrid scheduling.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-emerald-500/30 transition space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
+            <div className="p-6 rounded-2xl bg-card border border-border hover:border-emerald-500/30 transition space-y-3 shadow-xs">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20">
                 <TrendingUp className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold font-heading text-white">Performance-Based PPO</h4>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h4 className="text-base font-bold font-heading text-foreground">Performance-Based PPO</h4>
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 Direct full-time conversion opportunities for top-performing interns based on merit and evaluation.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-blue-500/30 transition space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20">
+            <div className="p-6 rounded-2xl bg-card border border-border hover:border-primary/30 transition space-y-3 shadow-xs">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
                 <Code2 className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold font-heading text-white">Modern Tech Stack</h4>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h4 className="text-base font-bold font-heading text-foreground">Modern Tech Stack</h4>
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 Work hands-on with Next.js 15, Flutter, TypeScript, Docker, Kubernetes, AWS, and AI systems.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-purple-500/30 transition space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20">
+            <div className="p-6 rounded-2xl bg-card border border-border hover:border-purple-500/30 transition space-y-3 shadow-xs">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-500/20">
                 <Zap className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold font-heading text-white">Market Compensation</h4>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h4 className="text-base font-bold font-heading text-foreground">Market Compensation</h4>
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 Competitive stipends and salary packages as per industry standards with performance bonuses.
               </p>
             </div>
@@ -592,7 +584,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
       {/* 5. BOTTOM CTA SECTION */}
       <CTASection
         title="Don't See Your Exact Role?"
-        description="We are constantly scouting for exceptional full-stack engineers, cloud architects, and security researchers. Drop your profile and let's talk."
+        description="We are constantly scouting for exceptional full-stack engineers, cloud architects, and security researchers in Bhopal. Drop your profile and let's talk."
         buttonText="Send Open Application"
         buttonLink="/contact"
       />

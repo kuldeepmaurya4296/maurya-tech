@@ -1,32 +1,37 @@
-"use client";
+'use client';
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { themes, defaultTheme } from '@/data/themes';
-
-
 
 const ThemeContext = createContext(undefined);
 
 export const ThemeProvider = ({ children }) => {
-  const [currentThemeId, setCurrentThemeId] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('maurya-theme') || defaultTheme;
-    }
-    return defaultTheme;
-  });
-
-  const currentTheme = themes.find(t => t.id === currentThemeId) || themes[0];
+  const [mounted, setMounted] = useState(false);
+  const [currentThemeId, setCurrentThemeId] = useState(defaultTheme);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', currentThemeId);
-    localStorage.setItem('maurya-theme', currentThemeId);
-  }, [currentThemeId]);
+    setMounted(true);
+    const saved = localStorage.getItem('maurya-theme');
+    if (saved && themes.some((t) => t.id === saved)) {
+      setCurrentThemeId(saved);
+      document.documentElement.setAttribute('data-theme', saved);
+    } else {
+      document.documentElement.setAttribute('data-theme', defaultTheme);
+    }
+  }, []);
 
   const setTheme = (themeId) => {
     setCurrentThemeId(themeId);
+    if (typeof window !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', themeId);
+      localStorage.setItem('maurya-theme', themeId);
+    }
   };
 
+  const currentTheme = themes.find((t) => t.id === currentThemeId) || themes[0];
+
   return (
-    <ThemeContext.Provider value={{ currentTheme, setTheme, themes }}>
+    <ThemeContext.Provider value={{ currentTheme, setTheme, themes, mounted }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -39,6 +44,3 @@ export const useTheme = () => {
   }
   return context;
 };
-
-
-

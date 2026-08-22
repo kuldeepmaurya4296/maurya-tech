@@ -1,131 +1,179 @@
-"use client";
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from "@/components/ui/dialog";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, ArrowRight, Sparkles, Share2 } from 'lucide-react';
+import { MessageCircle, ArrowRight, Sparkles, Share2, Clock, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 const AdvertisementDialog = () => {
-    const [open, setOpen] = useState(false);
-    const navigate = useRouter();
+  const [open, setOpen] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(5);
+  const router = useRouter();
 
-    useEffect(() => {
-        // Show dialog after 2 seconds
-        const openTimer = setTimeout(() => {
-            setOpen(true);
-        }, 2000);
+  useEffect(() => {
+    // 1. Open dialog after exactly 10 seconds
+    const openTimer = setTimeout(() => {
+      setOpen(true);
+      setTimeLeft(5);
+    }, 10000);
 
-        return () => clearTimeout(openTimer);
-    }, []);
+    return () => clearTimeout(openTimer);
+  }, []);
 
-    useEffect(() => {
-        if (open) {
-            // Auto close after 15 seconds (giving users enough time to read) or 5 seconds?
-            // User asked for "after 5 second".
-            const closeTimer = setTimeout(() => {
-                setOpen(false);
-            }, 5000);
-            return () => clearTimeout(closeTimer);
+  useEffect(() => {
+    if (!open) return;
+
+    // 2. Countdown timer for 5 seconds
+    const countdownInterval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval);
+          return 0;
         }
-    }, [open]);
+        return prev - 1;
+      });
+    }, 1000);
 
-    const handleContact = () => {
-        setOpen(false);
-        navigate.push('/contact');
+    // 3. Auto-close dialog after 5 seconds
+    const closeTimer = setTimeout(() => {
+      setOpen(false);
+    }, 5000);
+
+    return () => {
+      clearInterval(countdownInterval);
+      clearTimeout(closeTimer);
+    };
+  }, [open]);
+
+  const handleContact = () => {
+    setOpen(false);
+    router.push('/contact');
+  };
+
+  const handleShare = async () => {
+    const url = typeof window !== 'undefined' ? window.location.href : 'https://maurya-tech.com';
+    const shareData = {
+      title: 'Maurya Tech Exclusive Pilot Offer!',
+      text: '🚀 Get up to 60% OFF on Software Services & Start Your Risk-Free Pilot with Maurya Tech:',
+      url,
     };
 
-    const handleShare = async () => {
-        const url = typeof window !== 'undefined' ? window.location.href : '';
-        const shareData = {
-            title: 'Maurya Tech Exclusive Offers!',
-            text: '🚀 Get up to 60% OFF on Software Services & 30% Partnership Share with Maurya Tech! Check it out:',
-            url
-        };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        toast.success('Special offer link copied to clipboard!');
+      }
+    } catch (err) {
+      console.error('Error sharing:', err);
+    }
+  };
 
-        try {
-            if (navigator.share) {
-                await navigator.share(shareData);
-            } else {
-                await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-                toast.success("Offer link copied to clipboard!");
-            }
-        } catch (err) {
-            console.error('Error sharing:', err);
-        }
-    };
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-xl border border-accent/30 shadow-2xl p-6 rounded-3xl overflow-hidden">
+        {/* Top Progress Bar for 5s Duration */}
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-muted overflow-hidden">
+          <div
+            className="h-full bg-accent transition-all ease-linear"
+            style={{
+              width: `${(timeLeft / 5) * 100}%`,
+              transitionDuration: '1000ms',
+            }}
+          />
+        </div>
 
-    return (
-        <Dialog open={open} onOpenChange={setOpen} modal={false}>
-            <DialogContent className="sm:max-w-md bg-gradient-to-br from-background to-accent/5 border-accent/20">
-                <DialogHeader>
-                    <DialogTitle className="text-center text-2xl font-bold flex flex-col items-center gap-2">
-                        <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mb-2 animate-pulse">
-                            <Sparkles className="w-6 h-6" />
-                        </div>
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-accent to-primary">
-                            Exclusive Offers!
-                        </span>
-                    </DialogTitle>
-                    <DialogDescription asChild className="text-center text-lg mt-2 space-y-4">
-                        <div className="text-center text-lg mt-2 space-y-4">
-                            <div className="p-4 bg-card rounded-xl border border-border shadow-sm">
-                                <p className="font-semibold text-foreground text-lg">Up to 60% OFF</p>
-                                <p className="text-sm">on all Software & Web Services</p>
-                            </div>
+        <DialogHeader className="pt-2">
+          <div className="flex items-center justify-between">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Limited Time Offer</span>
+            </div>
 
-                            <div className="p-4 bg-card rounded-xl border border-border shadow-sm">
-                                <p className="font-semibold text-foreground text-lg">Up to 30% Partnership</p>
-                                <p className="text-sm">Share for Sales Partners</p>
-                            </div>
-                        </div>
-                    </DialogDescription>
-                </DialogHeader>
+            <div className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-md">
+              <Clock className="w-3 h-3 text-accent" />
+              <span>Closes in {timeLeft}s</span>
+            </div>
+          </div>
 
-                <div className="flex flex-col gap-3 py-4">
-                    <Button
-                        size="lg"
-                        className="w-full bg-accent text-accent-foreground hover:bg-accent/90 gap-2"
-                        onClick={handleContact}
-                    >
-                        Get Offer Now <ArrowRight className="w-4 h-4" />
-                    </Button>
+          <DialogTitle className="text-xl sm:text-2xl font-heading font-extrabold text-foreground mt-3">
+            Build Risk-Free With Our{' '}
+            <span className="bg-gradient-to-r from-accent to-blue-500 bg-clip-text text-transparent">
+              Pilot Model
+            </span>
+          </DialogTitle>
 
-                    <Button
-                        size="lg"
-                        variant="outline"
-                        className="w-full gap-2 border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950/30"
-                        asChild
-                    >
-                        <a href="https://wa.me/916263638053" target="_blank" rel="noopener noreferrer">
-                            <MessageCircle className="w-5 h-5" />
-                            Chat on WhatsApp
-                        </a>
-                    </Button>
-
-                    <Button
-                        size="lg"
-                        variant="ghost"
-                        className="w-full gap-2"
-                        onClick={handleShare}
-                    >
-                        <Share2 className="w-4 h-4" />
-                        Share with Friends
-                    </Button>
+          <DialogDescription asChild className="text-sm mt-2">
+            <div className="space-y-3 pt-2">
+              <div className="p-3.5 bg-background rounded-2xl border border-border flex items-center justify-between shadow-xs">
+                <div>
+                  <div className="font-bold text-foreground text-sm">Up to 60% OFF</div>
+                  <div className="text-xs text-muted-foreground">On Custom Web & Mobile App Pilots</div>
                 </div>
-            </DialogContent>
-        </Dialog>
-    );
+                <span className="text-xs font-bold text-accent px-2.5 py-1 rounded-lg bg-accent/10">
+                  Save 60%
+                </span>
+              </div>
+
+              <div className="p-3.5 bg-background rounded-2xl border border-border flex items-center justify-between shadow-xs">
+                <div>
+                  <div className="font-bold text-foreground text-sm">30% Commission Share</div>
+                  <div className="text-xs text-muted-foreground">For Referral & B2B Sales Partners</div>
+                </div>
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 px-2.5 py-1 rounded-lg bg-emerald-500/10">
+                  Partnership
+                </span>
+              </div>
+            </div>
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="flex flex-col gap-2.5 pt-4">
+          <Button
+            size="lg"
+            className="w-full bg-accent text-accent-foreground hover:bg-accent/90 font-bold text-xs py-5 rounded-xl shadow-lg shadow-accent/20 cursor-pointer"
+            onClick={handleContact}
+          >
+            <span>Claim Offer & Start Risk-Free Pilot</span>
+            <ArrowRight className="w-4 h-4 ml-1.5" />
+          </Button>
+
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full text-xs font-semibold border-emerald-500/30 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-xl"
+              asChild
+            >
+              <a href="https://wa.me/916263638053" target="_blank" rel="noopener noreferrer">
+                <MessageCircle className="w-3.5 h-3.5 mr-1.5" />
+                WhatsApp
+              </a>
+            </Button>
+
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full text-xs font-semibold border-border rounded-xl"
+              onClick={handleShare}
+            >
+              <Share2 className="w-3.5 h-3.5 mr-1.5" />
+              Share Link
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 };
 
 export default AdvertisementDialog;
-
-
-
-
