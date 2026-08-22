@@ -2,13 +2,31 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import User from '@/lib/models/User';
 import { comparePassword, signToken } from '@/lib/auth';
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
 
 export async function POST(req) {
   try {
+    // 1. Rate Limiting Check (Max 5 login attempts per 5 minutes per IP to prevent brute-force)
+    const clientIp = getClientIp(req);
+    const rateCheck = checkRateLimit(`login-${clientIp}`, 5, 5 * 60 * 1000);
+
+    if (!rateCheck.isAllowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Too many login attempts. Please wait ${rateCheck.resetInSeconds} seconds before trying again.`,
+        },
+        { status: 429 }
+      );
+    }
+
     const { email, password } = await req.json();
 
     if (!email || !password) {
-      return NextResponse.json({ message: 'Please provide both email and password.' }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: 'Please provide both email and password.' },
+        { status: 400 }
+      );
     }
 
     await connectToDatabase();
@@ -16,12 +34,18 @@ export async function POST(req) {
     const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+password');
 
     if (!user) {
-      return NextResponse.json({ message: 'Invalid email or password.' }, { status: 401 });
+      return NextResponse.json(
+        { success: false, message: 'Invalid email or password.' },
+        { status: 401 }
+      );
     }
 
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
-      return NextResponse.json({ message: 'Invalid email or password.' }, { status: 401 });
+      return NextResponse.json(
+        { success: false, message: 'Invalid email or password.' },
+        { status: 401 }
+      );
     }
 
     const tokenPayload = {
@@ -59,6 +83,6 @@ export async function POST(req) {
     return response;
   } catch (error) {
     console.error('Login error:', error);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }

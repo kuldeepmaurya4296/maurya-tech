@@ -5,7 +5,7 @@ import Job from '@/lib/models/Job';
 import Project from '@/lib/models/Project';
 import Service from '@/lib/models/Service';
 import Post from '@/lib/models/Post';
-import { hashPassword } from '@/lib/auth';
+import { hashPassword, verifyToken } from '@/lib/auth';
 
 import { jobs as initialJobs } from '@/data/jobs';
 import { projects as initialProjects } from '@/data/projects';
@@ -15,6 +15,19 @@ import { posts as initialPosts } from '@/data/posts';
 export async function POST(req) {
   try {
     await connectToDatabase();
+
+    // Security Check: Only allow if no admin users exist OR caller has valid admin token
+    const userCount = await User.countDocuments();
+    if (userCount > 0) {
+      const token = req.cookies.get('admin_token')?.value;
+      const authUser = await verifyToken(token);
+      if (!authUser) {
+        return NextResponse.json(
+          { success: false, message: 'Unauthorized. Admin session required to trigger re-seeding.' },
+          { status: 401 }
+        );
+      }
+    }
 
     // 1. Seed Admin User
     const existingAdmin = await User.findOne({ email: 'admin@maurya-tech.com' });
@@ -42,6 +55,8 @@ export async function POST(req) {
             location: j.location,
             type: j.type,
             experience: j.experience,
+            salary: j.salary || '',
+            skills: j.skills || [],
             description: j.description,
             responsibilities: j.responsibilities || [],
             requirements: j.requirements || [],

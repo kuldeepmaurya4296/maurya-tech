@@ -36,3 +36,41 @@ export async function POST(req) {
       return NextResponse.json(
         {
           success: false,
+          message: 'Invalid file format. Only PDF, DOC, DOCX, PNG, JPG, and WEBP files are permitted.',
+        },
+        { status: 400 }
+      );
+    }
+
+    // 3. Upload to Vercel Blob if token exists
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
+      const filename = `${Date.now()}-${sanitizedName}`;
+
+      const blob = await put(filename, file, {
+        access: 'public',
+        token: process.env.BLOB_READ_WRITE_TOKEN,
+      });
+
+      return NextResponse.json({
+        success: true,
+        url: blob.url,
+        downloadUrl: blob.downloadUrl || blob.url,
+      });
+    }
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Storage service token (BLOB_READ_WRITE_TOKEN) is not configured. Please use a direct resume link.',
+      },
+      { status: 503 }
+    );
+  } catch (error) {
+    console.error('Upload security error:', error);
+    return NextResponse.json(
+      { success: false, message: 'Error processing file upload. Please provide a direct resume link.' },
+      { status: 500 }
+    );
+  }
+}
