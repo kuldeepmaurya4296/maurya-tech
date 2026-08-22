@@ -3,10 +3,10 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { Layout } from '@/components/layout';
 import { Section, SectionHeader, FeatureCard, ProcessStep, CTASection, TestimonialCard } from '@/components/sections';
 import { useData } from '@/contexts/DataContext';
-import { motion } from 'framer-motion';
 import {
   Check,
   Users,
@@ -16,16 +16,16 @@ import {
   HeartHandshake,
   GraduationCap,
   ArrowRight,
-  Sparkles,
   ShieldCheck,
   Code2,
-  Cpu,
   Layers,
-  TrendingUp,
 } from 'lucide-react';
-import { AnimatedBackground, CursorEffect } from '@/components/effects';
-import AdvertisementDialog from '@/components/AdvertisementDialog';
 import { Button } from '@/components/ui/button';
+
+// Lazy-load Advertisement Dialog so it doesn't block critical page render
+const AdvertisementDialog = dynamic(() => import('@/components/AdvertisementDialog'), {
+  ssr: false,
+});
 
 export function HomePage({ homeData: serverHomeData, clientData: serverClientData }) {
   const { homeData: contextHomeData, clientData: contextClientData } = useData();
@@ -35,69 +35,45 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
 
   return (
     <Layout page="home">
-      {/* Advertisement Dialog - Opens after 10s for 5s */}
-      <AdvertisementDialog />
-
-      {/* Global Cursor Effect */}
-      <CursorEffect />
-
-      {/* 1. HERO SECTION: High-Converting Two-Column Layout with Right-Side Tech Visual */}
-      <section className="relative min-h-[90dvh] flex items-center pt-32 pb-16 md:pb-24 w-full overflow-hidden bg-background text-foreground border-b border-border/50">
-        {/* Animated Glow Elements */}
+      {/* 1. HERO SECTION: High-Converting Two-Column Layout (Instant LCP & Zero-TBT) */}
+      <section className="relative min-h-[85dvh] flex items-center pt-32 pb-16 md:pb-24 w-full overflow-hidden bg-background text-foreground border-b border-border/50">
+        {/* Hardware-accelerated ambient glow */}
         <div className="absolute top-1/4 left-10 w-96 h-96 bg-accent/15 rounded-full blur-3xl pointer-events-none -z-10" />
-        <div className="absolute top-1/3 right-10 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl pointer-events-none -z-10" />
+        <div className="absolute top-1/3 right-10 w-[450px] h-[450px] bg-primary/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
         {/* Subtle Grid Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--foreground)/0.03)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.03)_1px,transparent_1px)] bg-[size:48px_48px] pointer-events-none -z-10" />
 
         <div className="container-custom relative z-10">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            {/* Left Column: Headline, Description & CTAs */}
+            {/* Left Column: Headline, Description & CTAs (Standard HTML for instant LCP) */}
             <div className="lg:col-span-7 text-left space-y-6">
               {/* Pill Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/25 text-accent text-xs font-semibold uppercase tracking-wider shadow-xs"
-              >
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/25 text-accent text-xs font-semibold uppercase tracking-wider shadow-xs">
                 <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
                 <span>Risk-Free Pilot Model &bull; {hero.subheadline || 'From Idea to Production'}</span>
-              </motion.div>
+              </div>
 
               {/* Main Headline */}
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-4xl sm:text-5xl md:text-6xl font-heading font-extrabold text-foreground leading-[1.15] tracking-tight"
-              >
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-extrabold text-foreground leading-[1.15] tracking-tight">
                 We Build Scalable Software —{' '}
                 <span className="bg-gradient-to-r from-primary via-accent to-blue-600 bg-clip-text text-transparent">
                   Without Upfront Risk.
                 </span>
-              </motion.h1>
+              </h1>
 
               {/* Sub-description */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl"
-              >
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
                 {hero.description ||
                   'Maurya Technologies is a product engineering and cloud architecture company helping startups and enterprises build world-class SaaS, mobile apps, and scalable systems.'}
-              </motion.p>
+              </p>
 
               {/* CTA Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2"
-              >
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
                 <Link href={hero.ctaPrimary?.link || '/contact'}>
                   <Button
                     size="lg"
+                    aria-label="Start a Risk-Free Pilot"
                     className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold text-sm px-8 py-6 rounded-2xl shadow-lg shadow-accent/20 transition hover:scale-[1.02] cursor-pointer w-full sm:w-auto"
                   >
                     <span>{hero.ctaPrimary?.text || 'Start a Risk-Free Pilot'}</span>
@@ -109,22 +85,18 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
                   <Button
                     size="lg"
                     variant="outline"
+                    aria-label="Explore Case Studies"
                     className="border-border bg-card/80 hover:bg-muted text-foreground font-semibold text-sm px-8 py-6 rounded-2xl backdrop-blur-md transition hover:scale-[1.02] cursor-pointer w-full sm:w-auto"
                   >
                     <Layers className="w-4 h-4 mr-2 text-accent" />
                     <span>Explore Case Studies</span>
                   </Button>
                 </Link>
-              </motion.div>
+              </div>
 
               {/* Trust Stats Strip */}
               {hero.stats && hero.stats.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-border/60"
-                >
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-border/60">
                   {hero.stats.map((stat, index) => (
                     <div key={index} className="space-y-0.5">
                       <div className="text-2xl sm:text-3xl font-heading font-bold text-accent">
@@ -133,25 +105,21 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
                       <div className="text-xs text-muted-foreground font-medium">{stat.label}</div>
                     </div>
                   ))}
-                </motion.div>
+                </div>
               )}
             </div>
 
-            {/* Right Column: Hero Visual & Floating Tech Badges */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, x: 20 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="lg:col-span-5 relative"
-            >
+            {/* Right Column: Hero Visual & Tech Telemetry */}
+            <div className="lg:col-span-5 relative">
               {/* Outer Glow Card */}
               <div className="relative mx-auto max-w-lg rounded-3xl p-3 bg-gradient-to-b from-accent/20 via-border to-card border border-border shadow-2xl overflow-hidden group">
-                <div className="relative w-full h-[340px] sm:h-[420px] rounded-2xl overflow-hidden bg-slate-950">
+                <div className="relative w-full h-[320px] sm:h-[400px] rounded-2xl overflow-hidden bg-slate-950">
                   <Image
                     src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop"
                     alt="Maurya Technologies High-Performance Software Architecture Dashboard"
                     fill
                     priority
+                    fetchPriority="high"
                     sizes="(max-width: 768px) 100vw, 500px"
                     className="object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-90"
                   />
@@ -183,26 +151,18 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
                 </div>
 
                 {/* Floating Badge 1: Top Right */}
-                <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-card border border-accent/40 shadow-xl text-foreground text-xs font-semibold"
-                >
+                <div className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-card border border-accent/40 shadow-xl text-foreground text-xs font-semibold">
                   <Code2 className="w-4 h-4 text-accent" />
                   <span>Next.js 15 & Flutter</span>
-                </motion.div>
+                </div>
 
                 {/* Floating Badge 2: Bottom Left */}
-                <motion.div
-                  animate={{ y: [0, 8, 0] }}
-                  transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute -bottom-3 -left-3 hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-card border border-emerald-500/40 shadow-xl text-foreground text-xs font-semibold"
-                >
+                <div className="absolute -bottom-3 -left-3 hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-card border border-emerald-500/40 shadow-xl text-foreground text-xs font-semibold">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   <span>Enterprise Security</span>
-                </motion.div>
+                </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -230,12 +190,8 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
             const Icon = iconMap[item.icon] || Users;
 
             return (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08 }}
                 className="group p-6 bg-card rounded-3xl border border-border hover:border-accent/50 hover:shadow-xl transition-all duration-300 text-center flex flex-col items-center h-full"
               >
                 <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 border border-accent/20">
@@ -245,7 +201,7 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
                   {item.title}
                 </h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
-              </motion.div>
+              </div>
             );
           })}
         </div>
@@ -255,34 +211,20 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
       <Section variant="muted">
         <SectionHeader title={problem.title} subtitle={problem.subtitle} />
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-3.5"
-          >
+          <div className="space-y-3.5">
             {problem.problems.map((item, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08 }}
                 className="flex items-center gap-4 p-4 bg-card rounded-2xl border border-border hover:border-accent/30 transition-colors shadow-xs"
               >
                 <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center shrink-0 border border-accent/20">
                   <Check className="w-4 h-4 text-accent" />
                 </div>
                 <span className="text-foreground font-medium text-sm">{item.text}</span>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="p-8 md:p-10 bg-card rounded-3xl border border-accent/25 shadow-xl relative overflow-hidden"
-          >
+          </div>
+          <div className="p-8 md:p-10 bg-card rounded-3xl border border-accent/25 shadow-xl relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent pointer-events-none" />
             <div className="relative z-10 space-y-4">
               <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20">
@@ -294,13 +236,13 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
               </p>
               <div className="pt-2">
                 <Link href="/contact">
-                  <Button className="bg-accent text-accent-foreground font-bold text-xs px-6 py-5 rounded-xl">
+                  <Button aria-label="Experience the Pilot Model" className="bg-accent text-accent-foreground font-bold text-xs px-6 py-5 rounded-xl">
                     Experience the Pilot Model
                   </Button>
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </Section>
 
@@ -324,34 +266,22 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
               />
             ))}
           </div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="p-8 md:p-10 bg-card border border-border rounded-3xl sticky top-28 overflow-hidden shadow-lg"
-          >
+          <div className="p-8 md:p-10 bg-card border border-border rounded-3xl sticky top-28 overflow-hidden shadow-lg">
             <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent pointer-events-none" />
             <div className="relative z-10">
               <h4 className="font-heading font-bold text-xl mb-6 text-foreground">What You Get</h4>
               <div className="space-y-4">
                 {engagementModel.benefits.map((benefit, index) => (
-                  <motion.div
-                    key={index}
-                    className="flex items-center gap-3.5"
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.08 }}
-                  >
+                  <div key={index} className="flex items-center gap-3.5">
                     <div className="w-7 h-7 rounded-xl bg-accent/10 flex items-center justify-center shrink-0 border border-accent/20">
                       <Check className="w-4 h-4 text-accent" />
                     </div>
                     <span className="font-semibold text-sm text-foreground">{benefit}</span>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </Section>
 
@@ -400,6 +330,9 @@ export function HomePage({ homeData: serverHomeData, clientData: serverClientDat
         buttonText={cta.buttonText}
         buttonLink={cta.buttonLink}
       />
+
+      {/* Dynamic Advertisement Dialog */}
+      <AdvertisementDialog />
     </Layout>
   );
 }

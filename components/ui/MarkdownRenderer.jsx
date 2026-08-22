@@ -29,7 +29,30 @@ export default function MarkdownRenderer({ content, className = '' }) {
       prose-td:border prose-td:border-border prose-td:p-2.5
       prose-img:rounded-xl prose-img:shadow-lg prose-img:my-6 ${className}`}
     >
-      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
+        components={{
+          // Neutralize dangerous script & iframe injection in markdown
+          script: () => null,
+          iframe: () => null,
+          object: () => null,
+          embed: () => null,
+          a: ({ node, href, children, ...props }) => {
+            const isSafe = href && (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('/') || href.startsWith('#'));
+            return (
+              <a
+                href={isSafe ? href : '#'}
+                target={href?.startsWith('http') ? '_blank' : undefined}
+                rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                {...props}
+              >
+                {children}
+              </a>
+            );
+          },
+        }}
+      >
         {content}
       </ReactMarkdown>
     </div>

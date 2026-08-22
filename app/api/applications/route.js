@@ -2,33 +2,46 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Application from '@/lib/models/Application';
 import { verifyToken } from '@/lib/auth';
+import { logSecurityEvent } from '@/lib/securityLogger';
+import { getClientIp } from '@/lib/rateLimit';
+
+// Escape regex special characters to prevent NoSQL regex injection attacks
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 export async function GET(req) {
   try {
     const token = req.cookies.get('admin_token')?.value;
     const authUser = await verifyToken(token);
     if (!authUser) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      logSecurityEvent({
+        eventType: 'UNAUTHORIZED_ACCESS_ATTEMPT',
+        ip: getClientIp(req),
+        endpoint: '/api/applications',
+      });
+      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
 
     await connectToDatabase();
     const { searchParams } = new URL(req.url);
     const status = searchParams.get('status');
     const jobId = searchParams.get('jobId');
-    const search = searchParams.get('search');
+    const rawSearch = searchParams.get('search');
 
     const filter = {};
-    if (status && status !== 'all') {
+    if (status && status !== 'all' && typeof status === 'string') {
       filter.status = status;
     }
-    if (jobId && jobId !== 'all') {
+    if (jobId && jobId !== 'all' && typeof jobId === 'string') {
       filter.jobId = jobId;
     }
-    if (search) {
+    if (rawSearch && typeof rawSearch === 'string') {
+      const sanitizedSearch = escapeRegex(rawSearch.slice(0, 100).trim());
       filter.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { jobTitle: { $regex: search, $options: 'i' } },
+        { name: { $regex: sanitizedSearch, $options: 'i' } },
+        { email: { $regex: sanitizedSearch, $options: 'i' } },
+        { jobTitle: { $regex: sanitizedSearch, $options: 'i' } },
       ];
     }
 
@@ -41,6 +54,6 @@ export async function GET(req) {
     });
   } catch (error) {
     console.error('Fetch applications error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Failed to retrieve applications.' }, { status: 500 });
   }
 }

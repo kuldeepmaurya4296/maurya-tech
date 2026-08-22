@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { Layout } from '@/components/layout';
 import { CTASection } from '@/components/sections';
 import { useData } from '@/contexts/DataContext';
-import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -73,7 +72,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
 
   return (
     <Layout page="careers">
-      {/* 1. HERO SECTION: Ultra-Modern Light / Dark Adaptive Hero */}
+      {/* 1. HERO SECTION: Zero-CLS & Instant LCP Hero */}
       <section className="relative pt-32 pb-20 md:pb-28 overflow-hidden bg-background text-foreground border-b border-border/40">
         {/* Background Gradients */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-accent/15 via-primary/5 to-transparent blur-3xl pointer-events-none -z-10" />
@@ -81,49 +80,31 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
         <div className="container-custom relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             {/* Live Pill Badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/30 text-accent text-xs font-semibold uppercase tracking-wider mb-6 shadow-xs backdrop-blur-md"
-            >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/30 text-accent text-xs font-semibold uppercase tracking-wider mb-6 shadow-xs backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
               <span>We Are Actively Hiring in Bhopal &bull; {activeJobs.length} Open Positions</span>
-            </motion.div>
+            </div>
 
             {/* Main Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-extrabold tracking-tight mb-6 leading-[1.15] text-foreground"
-            >
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-extrabold tracking-tight mb-6 leading-[1.15] text-foreground">
               Architect Next-Gen Systems.{' '}
-              <span className="bg-gradient-to-r from-primary via-accent to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-accent to-blue-500 bg-clip-text text-transparent">
                 Accelerate Your Career.
               </span>
-            </motion.h1>
+            </h1>
 
             {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-10"
-            >
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-10">
               Join an engineering-first squad building mission-critical SaaS, cloud infrastructure, and mobile applications. All positions follow a{' '}
               <strong className="text-foreground font-semibold">Hybrid Model in Bhopal, MP</strong> with 3 months intensive in-office mentorship.
-            </motion.p>
+            </p>
 
             {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
-            >
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
               <Button
                 size="lg"
                 onClick={scrollToOpenings}
+                aria-label={`Explore ${activeJobs.length} Open Positions`}
                 className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold px-8 py-6 rounded-2xl shadow-lg shadow-accent/20 transition hover:scale-[1.02] cursor-pointer w-full sm:w-auto text-sm"
               >
                 <span>Explore {activeJobs.length} Open Positions</span>
@@ -134,24 +115,24 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                 size="lg"
                 variant="outline"
                 onClick={scrollToOpenings}
+                aria-label="Search by Tech Stack"
                 className="border-border bg-card/80 hover:bg-muted text-foreground font-semibold px-8 py-6 rounded-2xl backdrop-blur-md transition hover:scale-[1.02] cursor-pointer w-full sm:w-auto text-sm"
               >
                 <Search className="w-4 h-4 mr-2 text-accent" />
                 <span>Search by Tech Stack</span>
               </Button>
-            </motion.div>
+            </div>
 
             {/* Smart Search Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="max-w-2xl mx-auto p-2 sm:p-2.5 bg-card border border-border rounded-2xl shadow-xl backdrop-blur-xl"
-            >
+            <div className="max-w-2xl mx-auto p-2 sm:p-2.5 bg-card border border-border rounded-2xl shadow-xl backdrop-blur-xl">
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
+                  <label htmlFor="careers-search-input" className="sr-only">
+                    Search roles by skill or title
+                  </label>
                   <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
+                    id="careers-search-input"
                     type="text"
                     placeholder="Search roles e.g. Flutter, Next.js, DevOps, Cyber Security, QA..."
                     value={searchQuery}
@@ -161,6 +142,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery('')}
+                      aria-label="Clear search input"
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
                     >
                       <X className="w-4 h-4" />
@@ -169,6 +151,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                 </div>
                 <Button
                   onClick={scrollToOpenings}
+                  aria-label="Find openings"
                   className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold text-xs px-5 py-3 rounded-xl cursor-pointer shrink-0"
                 >
                   Find Openings
@@ -183,6 +166,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                     <button
                       key={skill}
                       onClick={() => setFilterSkill(skill)}
+                      aria-label={`Filter by ${skill}`}
                       className="px-2.5 py-0.5 rounded-full bg-muted/80 hover:bg-accent/10 hover:text-accent border border-border transition cursor-pointer whitespace-nowrap"
                     >
                       {skill}
@@ -190,7 +174,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                   )
                 )}
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
 
@@ -217,7 +201,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
         </div>
       </section>
 
-      {/* 2. CULTURE & ENGINEERING DNA BENTO GRID */}
+      {/* 2. CULTURE & ENGINEERING DNA */}
       <section className="py-20 bg-muted/30 border-y border-border/60">
         <div className="container-custom max-w-6xl">
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -234,12 +218,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
 
           <div className="grid md:grid-cols-2 gap-8 items-stretch">
             {/* What We Value */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="p-8 rounded-3xl bg-card border border-accent/20 shadow-lg relative overflow-hidden flex flex-col justify-between"
-            >
+            <div className="p-8 rounded-3xl bg-card border border-accent/20 shadow-lg relative overflow-hidden flex flex-col justify-between">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-xs font-semibold mb-6 border border-accent/30">
                   <Sparkles className="w-3.5 h-3.5" />
@@ -269,15 +248,10 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               <div className="mt-8 pt-6 border-t border-border text-xs text-accent font-medium">
                 &rarr; High autonomy with clear, objective accountability.
               </div>
-            </motion.div>
+            </div>
 
             {/* What We Reject */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="p-8 rounded-3xl bg-card border border-destructive/20 shadow-lg relative overflow-hidden flex flex-col justify-between"
-            >
+            <div className="p-8 rounded-3xl bg-card border border-destructive/20 shadow-lg relative overflow-hidden flex flex-col justify-between">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-destructive/10 text-destructive text-xs font-semibold mb-6 border border-destructive/30">
                   <XCircle className="w-3.5 h-3.5" />
@@ -307,7 +281,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               <div className="mt-8 pt-6 border-t border-border text-xs text-destructive font-medium">
                 &rarr; Zero tolerance for office politics and unproductive meetings.
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -339,8 +313,12 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
           <div className="p-4 rounded-2xl bg-card border border-border shadow-md mb-10 space-y-4">
             {/* Search Input inside filter bar */}
             <div className="relative">
+              <label htmlFor="filter-search-input" className="sr-only">
+                Filter by role title or tech stack
+              </label>
               <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
+                id="filter-search-input"
                 type="text"
                 placeholder="Filter by role title or tech stack (e.g. Flutter, Next.js, Docker, Cypress, Penetration Testing)..."
                 value={searchQuery}
@@ -350,6 +328,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
+                  aria-label="Clear filter search"
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   <X className="w-4 h-4" />
@@ -365,6 +344,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                   <button
                     key={dept}
                     onClick={() => setSelectedDepartment(dept)}
+                    aria-label={`Filter by department ${dept}`}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                       selectedDepartment === dept
                         ? 'bg-accent text-accent-foreground shadow-xs'
@@ -382,6 +362,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                   <button
                     key={type}
                     onClick={() => setSelectedType(type)}
+                    aria-label={`Filter by type ${type}`}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                       selectedType === type
                         ? 'bg-primary text-primary-foreground shadow-xs'
@@ -438,13 +419,9 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                 </Button>
               </div>
             ) : (
-              filteredJobs.map((job, idx) => (
-                <motion.div
+              filteredJobs.map((job) => (
+                <div
                   key={job.id || job.slug}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.04 }}
                   className="p-6 md:p-8 rounded-3xl bg-card hover:bg-card/90 border border-border hover:border-accent/40 transition-all duration-300 shadow-sm hover:shadow-md group"
                 >
                   {/* Top Row: Department Badge + Type + Experience */}
@@ -509,13 +486,16 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                     </span>
 
                     <Link href={`/careers/${job.id || job.slug}`}>
-                      <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs group-hover:scale-105 transition cursor-pointer">
+                      <Button
+                        aria-label={`View Details & Apply for ${job.title}`}
+                        className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs group-hover:scale-105 transition cursor-pointer"
+                      >
                         <span>View Details & Apply</span>
                         <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </Link>
                   </div>
-                </motion.div>
+                </div>
               ))
             )}
           </div>
@@ -542,7 +522,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center border border-accent/20">
                 <Building2 className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold font-heading text-foreground">Hybrid Work Culture</h4>
+              <h3 className="text-base font-bold font-heading text-foreground">Hybrid Work Culture</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 3 months intensive in-office onboarding & mentorship in Bhopal, followed by flexible hybrid scheduling.
               </p>
@@ -552,7 +532,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20">
                 <TrendingUp className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold font-heading text-foreground">Performance-Based PPO</h4>
+              <h3 className="text-base font-bold font-heading text-foreground">Performance-Based PPO</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 Direct full-time conversion opportunities for top-performing interns based on merit and evaluation.
               </p>
@@ -562,7 +542,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
                 <Code2 className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold font-heading text-foreground">Modern Tech Stack</h4>
+              <h3 className="text-base font-bold font-heading text-foreground">Modern Tech Stack</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 Work hands-on with Next.js 15, Flutter, TypeScript, Docker, Kubernetes, AWS, and AI systems.
               </p>
@@ -572,7 +552,7 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
               <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-500/20">
                 <Zap className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold font-heading text-foreground">Market Compensation</h4>
+              <h3 className="text-base font-bold font-heading text-foreground">Market Compensation</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 Competitive stipends and salary packages as per industry standards with performance bonuses.
               </p>

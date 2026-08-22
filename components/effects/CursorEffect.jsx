@@ -1,41 +1,51 @@
-"use client";
+'use client';
+
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
-
-
 export const CursorEffect = ({ enabled = true }) => {
+  const [isTouchDevice, setIsTouchDevice] = useState(true);
   const [isHovering, setIsHovering] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
 
-  const cursorX = useMotionValue(0);
-  const cursorY = useMotionValue(0);
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
 
   const springConfig = { damping: 25, stiffness: 400 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
-  const handleMouseMove = useCallback((e) => {
-    cursorX.set(e.clientX);
-    cursorY.set(e.clientY);
-  }, [cursorX, cursorY]);
+  const handleMouseMove = useCallback(
+    (e) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+    },
+    [cursorX, cursorY]
+  );
 
   const handleMouseDown = useCallback(() => setIsClicking(true), []);
   const handleMouseUp = useCallback(() => setIsClicking(false), []);
 
   useEffect(() => {
-    if (!enabled) return;
+    // Detect touch / mobile devices and disable custom cursor to preserve 100% performance
+    if (typeof window !== 'undefined') {
+      const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      setIsTouchDevice(isTouch);
+      if (isTouch || !enabled) return;
+    }
 
     const handleMouseOver = (e) => {
       const target = e.target;
-      const isInteractive = target.closest('a, button, [role="button"], input, textarea, select, [data-cursor-hover]');
+      const isInteractive = target.closest(
+        'a, button, [role="button"], input, textarea, select, [data-cursor-hover]'
+      );
       setIsHovering(!!isInteractive);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseover', handleMouseOver);
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mouseover', handleMouseOver, { passive: true });
+    window.addEventListener('mousedown', handleMouseDown, { passive: true });
+    window.addEventListener('mouseup', handleMouseUp, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
@@ -45,7 +55,7 @@ export const CursorEffect = ({ enabled = true }) => {
     };
   }, [enabled, handleMouseMove, handleMouseDown, handleMouseUp]);
 
-  if (!enabled) return null;
+  if (!enabled || isTouchDevice) return null;
 
   return (
     <>
@@ -82,24 +92,8 @@ export const CursorEffect = ({ enabled = true }) => {
           duration: 0.2,
         }}
       />
-
-      {/* Cursor trail/glow */}
-      {/* <motion.div
-        className="fixed top-0 left-0 w-32 h-32 rounded-full pointer-events-none z-[9997] hidden md:block"
-        style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-          translateX: '-50%',
-          translateY: '-50%',
-          background: 'radial-gradient(circle, hsl(var(--accent) / 0.1) 0%, transparent 70%)',
-        }}
-      /> */}
     </>
   );
 };
 
 export default CursorEffect;
-
-
-
-

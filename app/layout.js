@@ -35,7 +35,7 @@ export const viewport = {
   maximumScale: 5,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#030712" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0f1d" },
   ],
 };
 
@@ -45,7 +45,7 @@ export const metadata = {
     default: "Maurya Technologies | Scalable Software & Enterprise Solutions",
     template: "%s | Maurya Technologies"
   },
-  description: "Maurya Technologies: Leading Software Engineering & IT Company in Bhopal, India. We build scalable SaaS, Web Applications, Mobile Apps, Cloud Infrastructure, and AI Solutions.",
+  description: "Maurya Technologies: Leading Software Engineering & IT Company in Bhopal, India. We build scalable SaaS, Web Applications, Mobile Apps, Cloud Infrastructure, and AI Solutions with a risk-free Pilot Model.",
   keywords: globalKeywordsList,
   authors: [{ name: "Kuldeep Maurya" }, { name: "Maurya Technologies Team" }],
   creator: "Maurya Technologies",
@@ -56,7 +56,7 @@ export const metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "Maurya Technologies | Quality Software Solutions",
+    title: "Maurya Technologies | Scalable Software & Enterprise Solutions",
     description: "Expert Software Development Services. We build scalable, high-performance web and mobile applications using modern technologies.",
     url: 'https://maurya-tech.com',
     siteName: 'Maurya Technologies',
@@ -118,6 +118,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

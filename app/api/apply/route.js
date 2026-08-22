@@ -6,6 +6,16 @@ import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Validates safe URL protocol (prevents SSRF via file://, gopher://, javascript:, internal LAN IPs)
+function isValidPublicHttpUrl(stringUrl) {
+  try {
+    const parsed = new URL(stringUrl);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch (err) {
+    return false;
+  }
+}
+
 export async function POST(req) {
   try {
     // 1. Rate Limiting Check (Max 5 submissions per 5 minutes per IP)
@@ -25,10 +35,11 @@ export async function POST(req) {
     const data = await req.json();
 
     // 2. Validate required fields & formats
-    const name = data.name?.trim();
-    const email = data.email?.trim().toLowerCase();
-    const phone = data.phone?.trim();
+    const name = data.name?.trim().slice(0, 100);
+    const email = data.email?.trim().toLowerCase().slice(0, 100);
+    const phone = data.phone?.trim().slice(0, 30);
     const resume = data.resume?.trim();
+    const linkedin = data.linkedin?.trim() || '';
 
     if (!name || !email || !phone || !resume) {
       return NextResponse.json(
@@ -44,19 +55,34 @@ export async function POST(req) {
       );
     }
 
+    // SSRF & Safe Protocol Validation
+    if (!isValidPublicHttpUrl(resume)) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid resume URL. Please provide a valid HTTP or HTTPS web link.' },
+        { status: 400 }
+      );
+    }
+
+    if (linkedin && !isValidPublicHttpUrl(linkedin)) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid LinkedIn URL. Please provide a valid profile link starting with https://' },
+        { status: 400 }
+      );
+    }
+
     // 3. Save Application to MongoDB
     let savedApplication = null;
     try {
       await connectToDatabase();
       savedApplication = await Application.create({
-        jobId: data.jobId || 'general',
-        jobTitle: data.jobTitle || 'General Application',
+        jobId: (data.jobId || 'general').slice(0, 50),
+        jobTitle: (data.jobTitle || 'General Application').slice(0, 150),
         name,
         email,
         phone,
-        linkedin: data.linkedin?.trim() || '',
+        linkedin,
         resume,
-        coverLetter: data.coverLetter?.trim() || '',
+        coverLetter: (data.coverLetter?.trim() || '').slice(0, 3000),
         status: 'Pending',
       });
     } catch (dbError) {
@@ -73,7 +99,7 @@ export async function POST(req) {
         <p><strong>Phone:</strong> ${phone}</p>
         <p><strong>Role Applied For:</strong> ${data.jobTitle || 'General'}</p>
         <hr style="border: none; border-top: 1px solid #eaeaea; margin: 15px 0;" />
-        <p><strong>LinkedIn:</strong> ${data.linkedin ? `<a href="${data.linkedin}" target="_blank">${data.linkedin}</a>` : 'Not provided'}</p>
+        <p><strong>LinkedIn:</strong> ${linkedin ? `<a href="${linkedin}" target="_blank">${linkedin}</a>` : 'Not provided'}</p>
         <p><strong>Resume:</strong> <a href="${resume}" target="_blank" style="background-color: #0284c7; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none;">View Resume</a></p>
         ${
           data.coverLetter

@@ -31,7 +31,7 @@ const nextConfig = {
     ],
   },
 
-  // Security & caching headers
+  // OWASP Enterprise Security & Caching Headers
   async headers() {
     return [
       {
@@ -51,11 +51,29 @@ const nextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
+            value: 'DENY',
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com data:",
+              "img-src 'self' data: blob: https://images.unsplash.com https://*.public.blob.vercel-storage.com https://maurya-tech.com",
+              "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://*.public.blob.vercel-storage.com",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
           },
         ],
       },
