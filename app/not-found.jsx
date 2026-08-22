@@ -21,14 +21,7 @@ export default function NotFound() {
           404 &bull; PAGE NOT FOUND
         </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-6xl sm:text-8xl font-heading font-extrabold tracking-tight text-white mb-4"
-        >
-          Lost in Space?
-        </motion.h1>
+
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}

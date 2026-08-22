@@ -2,13 +2,9 @@
 
 import React from 'react';
 import { Layout } from '@/components/layout';
-import { motion } from 'framer-motion';
 import {
-  MapPin,
-  Briefcase,
   Clock,
   ArrowLeft,
-  DollarSign,
   CheckCircle2,
   Cpu,
   Gift,
@@ -38,11 +34,7 @@ export const JobDetailPage = ({ job }) => {
             Back to All Openings
           </Link>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-4xl"
-          >
+          <div className="max-w-4xl">
             <div className="flex flex-wrap items-center gap-2 mb-4">
               <span className="px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent" />
@@ -88,7 +80,7 @@ export const JobDetailPage = ({ job }) => {
                 description={`Apply for ${job.title} (${job.type}) in Bhopal at Maurya Technologies.`}
               />
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -100,11 +92,7 @@ export const JobDetailPage = ({ job }) => {
             <div className="lg:col-span-7 space-y-10">
               {/* Skills / Tech Stack Grid */}
               {job.skills && job.skills.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-6 md:p-8 rounded-3xl bg-card border border-border shadow-md space-y-3.5"
-                >
+                <div className="p-6 md:p-8 rounded-3xl bg-card border border-border shadow-md space-y-3.5">
                   <div className="flex items-center gap-2 text-sm font-heading font-bold text-foreground">
                     <Cpu className="w-4 h-4 text-accent" />
                     Required Tech Stack & Capabilities
@@ -119,31 +107,21 @@ export const JobDetailPage = ({ job }) => {
                       </span>
                     ))}
                   </div>
-                </motion.div>
+                </div>
               )}
 
               {/* Description */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="space-y-3"
-              >
+              <div className="space-y-3">
                 <h2 className="text-xl font-heading font-bold text-foreground flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-accent" />
                   About the Position & Work Model
                 </h2>
                 <p className="text-muted-foreground leading-relaxed text-sm">{job.description}</p>
-              </motion.div>
+              </div>
 
               {/* Responsibilities */}
               {job.responsibilities && job.responsibilities.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="space-y-4"
-                >
+                <div className="space-y-4">
                   <h2 className="text-xl font-heading font-bold text-foreground flex items-center gap-2">
                     <CheckCircle2 className="w-5 h-5 text-accent" />
                     Key Responsibilities
@@ -159,17 +137,12 @@ export const JobDetailPage = ({ job }) => {
                       </li>
                     ))}
                   </ul>
-                </motion.div>
+                </div>
               )}
 
               {/* Requirements */}
               {job.requirements && job.requirements.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="space-y-4"
-                >
+                <div className="space-y-4">
                   <h2 className="text-xl font-heading font-bold text-foreground flex items-center gap-2">
                     <ShieldCheck className="w-5 h-5 text-accent" />
                     Qualifications & Requirements
@@ -185,17 +158,12 @@ export const JobDetailPage = ({ job }) => {
                       </li>
                     ))}
                   </ul>
-                </motion.div>
+                </div>
               )}
 
               {/* Benefits */}
               {job.benefits && job.benefits.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="p-6 md:p-8 rounded-3xl bg-muted/40 border border-border space-y-4"
-                >
+                <div className="p-6 md:p-8 rounded-3xl bg-muted/40 border border-border space-y-4">
                   <h2 className="text-xl font-heading font-bold text-foreground flex items-center gap-2">
                     <Gift className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                     Perks, Benefits & PPO Path
@@ -211,7 +179,7 @@ export const JobDetailPage = ({ job }) => {
                       </li>
                     ))}
                   </ul>
-                </motion.div>
+                </div>
               )}
             </div>
 

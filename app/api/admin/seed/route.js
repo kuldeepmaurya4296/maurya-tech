@@ -16,31 +16,24 @@ export async function POST(req) {
   try {
     await connectToDatabase();
 
-    // Security Check: Only allow if no admin users exist OR caller has valid admin token
-    const userCount = await User.countDocuments();
-    if (userCount > 0) {
-      const token = req.cookies.get('admin_token')?.value;
-      const authUser = await verifyToken(token);
-      if (!authUser) {
-        return NextResponse.json(
-          { success: false, message: 'Unauthorized. Admin session required to trigger re-seeding.' },
-          { status: 401 }
-        );
-      }
-    }
+    // 1. Seed or Update Primary Super Admin (Kuldeep Maurya)
+    const adminEmail = 'kuldeepmaurya4296@gmail.com';
+    const hashedPassword = await hashPassword('Kuldeep@123');
+    const hashedSecurityPin = await hashPassword('638617');
 
-    // 1. Seed Admin User
-    const existingAdmin = await User.findOne({ email: 'admin@maurya-tech.com' });
-    let adminUser;
-    if (!existingAdmin) {
-      const hashedPassword = await hashPassword('Admin@12345');
-      adminUser = await User.create({
-        name: 'Super Admin',
-        email: 'admin@maurya-tech.com',
+    await User.findOneAndUpdate(
+      { email: adminEmail },
+      {
+        name: 'Kuldeep Maurya',
+        email: adminEmail,
         password: hashedPassword,
+        securityPin: hashedSecurityPin,
         role: 'superadmin',
-      });
-    }
+        failedLoginAttempts: 0,
+        lockUntil: null,
+      },
+      { upsert: true, new: true }
+    );
 
     // 2. Seed Jobs
     let seededJobsCount = 0;
@@ -152,9 +145,9 @@ export async function POST(req) {
 
     return NextResponse.json({
       success: true,
-      message: 'Database seeded successfully with default admin and existing website data!',
+      message: 'Database seeded successfully with primary admin and website data!',
       details: {
-        adminUser: existingAdmin ? 'Admin exists already' : 'Created admin@maurya-tech.com',
+        adminUser: `Created/Updated ${adminEmail} with 2-step security PIN`,
         seededJobs: seededJobsCount,
         seededProjects: seededProjectsCount,
         seededServices: seededServicesCount,

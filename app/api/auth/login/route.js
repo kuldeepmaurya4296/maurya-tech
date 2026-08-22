@@ -31,7 +31,7 @@ export async function POST(req) {
       );
     }
 
-    const { email, password, totpCode } = await req.json();
+    const { email, password, securityPin } = await req.json();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -43,7 +43,7 @@ export async function POST(req) {
     await connectToDatabase();
 
     const normalizedEmail = email.toLowerCase().trim().slice(0, 100);
-    const user = await User.findOne({ email: normalizedEmail }).select('+password +twoFactorSecret');
+    const user = await User.findOne({ email: normalizedEmail }).select('+password +securityPin');
 
     if (!user) {
       logSecurityEvent({
@@ -59,7 +59,7 @@ export async function POST(req) {
       );
     }
 
-    // 2. Enterprise Security: DB-backed Account Lockout Check
+    // 2. DB-backed Account Lockout Check
     if (user.lockUntil && user.lockUntil > new Date()) {
       const remainingMinutes = Math.ceil((user.lockUntil - new Date()) / (60 * 1000));
       logSecurityEvent({
@@ -74,14 +74,13 @@ export async function POST(req) {
           success: false,
           message: `Account is temporarily locked due to multiple failed login attempts. Please try again in ${remainingMinutes} minute(s).`,
         },
-        { status: 423 } // Locked
+        { status: 423 }
       );
     }
 
-    // 3. Verify Password
+    // 3. Verify Step 1: Password
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
-      // Increment failed attempts and trigger lockout if limit reached
       const newAttempts = (user.failedLoginAttempts || 0) + 1;
       const updateData = { failedLoginAttempts: newAttempts };
 
@@ -110,7 +109,53 @@ export async function POST(req) {
       );
     }
 
-    // 4. Reset failed attempts on successful password verification
+    // 4. Verify Step 2: 6-Digit Master Security PIN (if configured for this account)
+    if (user.securityPin) {
+      if (!securityPin) {
+        // Password is correct, now prompt client for Step 2 Security PIN
+        return NextResponse.json(
+          {
+            success: true,
+            requireSecurityPin: true,
+            message: 'Password verified. Please enter your 6-digit Master Security PIN.',
+          },
+          { status: 200 }
+        );
+      }
+
+      // Verify the 6-digit Security PIN with Bcrypt
+      const isPinMatch = await comparePassword(securityPin.toString().trim(), user.securityPin);
+      if (!isPinMatch) {
+        const newAttempts = (user.failedLoginAttempts || 0) + 1;
+        const updateData = { failedLoginAttempts: newAttempts };
+
+        if (newAttempts >= MAX_FAILED_ATTEMPTS) {
+          updateData.lockUntil = new Date(Date.now() + LOCK_TIME_MS);
+          logSecurityEvent({
+            eventType: 'ACCOUNT_LOCKED_MAX_ATTEMPTS_REACHED',
+            ip: clientIp,
+            endpoint: '/api/auth/login',
+            details: { userId: user._id.toString(), attempts: newAttempts },
+          });
+        }
+
+        await User.findByIdAndUpdate(user._id, updateData);
+
+        logSecurityEvent({
+          eventType: 'FAILED_LOGIN_INVALID_SECURITY_PIN',
+          ip: clientIp,
+          endpoint: '/api/auth/login',
+          details: { userId: user._id.toString(), failedAttempts: newAttempts },
+        });
+
+        return NextResponse.json(
+          { success: false, message: 'Invalid 6-digit Master Security PIN.' },
+          { status: 401 }
+        );
+      }
+    }
+
+    // 5. Reset failed attempts upon successful 2-step verification
     if (user.failedLoginAttempts > 0 || user.lockUntil) {
       await User.findByIdAndUpdate(user._id, {
         failedLoginAttempts: 0,
@@ -118,7 +163,7 @@ export async function POST(req) {
       });
     }
 
-    // 5. Generate Auth JWT Token
+    // 6. Generate and Issue Auth JWT Token
     const tokenPayload = {
       id: user._id.toString(),
       name: user.name,
@@ -142,7 +187,6 @@ export async function POST(req) {
       { status: 200 }
     );
 
-    // Set secure HTTP-only cookie
     response.cookies.set('admin_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -152,7 +196,7 @@ export async function POST(req) {
     });
 
     logSecurityEvent({
-      eventType: 'SUCCESSFUL_LOGIN',
+      eventType: 'SUCCESSFUL_2STEP_LOGIN',
       ip: clientIp,
       endpoint: '/api/auth/login',
       details: { userId: user._id.toString(), role: user.role },

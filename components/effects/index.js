@@ -1,8 +1,3 @@
 export * from './AnimatedBackground';
 export * from './CursorEffect';
-export * from './TextAnimations';
-export * from './ScrollAnimations';
-
-
-
-
+export { default as AnalyticsTracker } from './AnalyticsTracker';
