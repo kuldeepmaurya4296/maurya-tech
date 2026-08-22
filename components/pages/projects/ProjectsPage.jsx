@@ -8,8 +8,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Check, ExternalLink } from 'lucide-react';
 
-export const ProjectsPage = () => {
-    const { hero, categories, projects, pilot } = projectsData;
+export const ProjectsPage = ({ projectsData: serverProjectsData }) => {
+    const data = serverProjectsData || projectsData;
+    const { hero, categories, projects, pilot } = data;
     const [activeCategory, setActiveCategory] = useState('All');
 
     const filteredProjects = activeCategory === 'All'

@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import MarkdownRenderer from '@/components/ui/MarkdownRenderer';
+import ShareButtons from '@/components/ui/ShareButtons';
 import {
     ArrowLeft,
     ExternalLink,
@@ -58,12 +60,12 @@ const iconMap = {
     Code
 };
 
-export const ProjectDetailPage = () => {
+export const ProjectDetailPage = ({ project: serverProject }) => {
     const params = useParams();
     const slug = params?.slug;
     const router = useRouter();
 
-    const project = projects.projects.find(p => p.slug === slug);
+    const project = serverProject || projects.projects.find(p => p.slug === slug || p.id === slug);
 
     const [activeDesktopIndex, setActiveDesktopIndex] = useState(0);
     const [activeMobileIndex, setActiveMobileIndex] = useState(0);
@@ -157,16 +159,19 @@ export const ProjectDetailPage = () => {
                             )}
                         </div>
 
-                        {project.liveLink && project.liveLink !== '#' && (
-                            <Button
-                                size="lg"
-                                className="bg-accent text-accent-foreground hover:bg-accent/90"
-                                onClick={() => window.open(project.liveLink, '_blank')}
-                            >
-                                <ExternalLink className="w-5 h-5 mr-2" />
-                                View Live Project
-                            </Button>
-                        )}
+                        <div className="flex flex-wrap items-center gap-4">
+                            {project.liveLink && project.liveLink !== '#' && (
+                                <Button
+                                    size="lg"
+                                    className="bg-accent text-accent-foreground hover:bg-accent/90"
+                                    onClick={() => window.open(project.liveLink, '_blank')}
+                                >
+                                    <ExternalLink className="w-5 h-5 mr-2" />
+                                    View Live Project
+                                </Button>
+                            )}
+                            <ShareButtons title={`${project.title} - Case Study by Maurya Technologies`} description={project.shortDescription} />
+                        </div>
                     </motion.div>
                 </div>
             </section>

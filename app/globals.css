@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overflow-x: hidden;
+  touch-action: pan-y;
+}
+
 @theme {
   --font-heading: 'Montserrat', sans-serif;
   --font-body: 'Open Sans', sans-serif;

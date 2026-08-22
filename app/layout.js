@@ -2,34 +2,50 @@ import { Inter, Montserrat, Open_Sans, Fira_Code } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { globalKeywordsList, seoData } from "@/data/seo-keywords";
+import { Analytics } from "@vercel/analytics/next";
+import AnalyticsTracker from "@/components/effects/AnalyticsTracker";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const montserrat = Montserrat({
   variable: "--font-heading",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const openSans = Open_Sans({
   variable: "--font-body",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const firaCode = Fira_Code({
   variable: "--font-mono",
   subsets: ["latin"],
+  display: "swap",
 });
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#030712" },
+  ],
+};
 
 export const metadata = {
   metadataBase: new URL('https://maurya-tech.com'),
   title: {
-    default: "Maurya Technologies | Quality Software Solutions",
+    default: "Maurya Technologies | Scalable Software & Enterprise Solutions",
     template: "%s | Maurya Technologies"
   },
-  description: "Maurya Technologies & Services: Your trusted partner for Scalable Software, Web Development, Mobile Apps, and Enterprise Solutions. We build risk-free with our Pilot Model.",
+  description: "Maurya Technologies: Leading Software Engineering & IT Company in Bhopal, India. We build scalable SaaS, Web Applications, Mobile Apps, Cloud Infrastructure, and AI Solutions.",
   keywords: globalKeywordsList,
   authors: [{ name: "Kuldeep Maurya" }, { name: "Maurya Technologies Team" }],
   creator: "Maurya Technologies",
@@ -46,7 +62,7 @@ export const metadata = {
     siteName: 'Maurya Technologies',
     images: [
       {
-        url: '/og-image.png', // You should create this image or use a placeholder
+        url: '/og-image.png',
         width: 1200,
         height: 630,
         alt: 'Maurya Technologies & Services',
@@ -60,7 +76,7 @@ export const metadata = {
     title: "Maurya Technologies",
     description: "Innovative software solutions. From Idea to Production. Start your risk-free pilot today.",
     images: ['/og-image.png'],
-    creator: '@mauryatech', // Placeholder handle
+    creator: '@mauryatech',
   },
   robots: {
     index: true,
@@ -87,8 +103,15 @@ export default function RootLayout({ children }) {
     "alternateName": seoData.typos,
     "url": "https://maurya-tech.com",
     "logo": "https://maurya-tech.com/logo.png",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bhopal",
+      "addressRegion": "Madhya Pradesh",
+      "addressCountry": "IN"
+    },
     "sameAs": [
-      // Add social links here
+      "https://github.com/kuldeepmaurya4296",
+      "https://linkedin.com/company/maurya-technologies"
     ]
   };
 
@@ -102,6 +125,8 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${inter.variable} ${montserrat.variable} ${openSans.variable} ${firaCode.variable} antialiased`} suppressHydrationWarning>
         <Providers>{children}</Providers>
+        <AnalyticsTracker />
+        <Analytics />
       </body>
     </html>
   );

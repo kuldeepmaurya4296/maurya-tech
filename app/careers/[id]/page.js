@@ -1,83 +1,143 @@
 import { notFound } from 'next/navigation';
-import { jobs } from '@/data/jobs';
+import { jobs as fallbackJobs } from '@/data/jobs';
 import { JobDetailPage } from '@/components/pages/careers/JobDetailPage';
+import connectToDatabase from '@/lib/mongodb';
+import Job from '@/lib/models/Job';
 
-export async function generateMetadata({ params }) {
-    // Determine the parameters based on actual next 14+ behavior (params might be a promise)
-    // Next.js 15+ has asynchronous params. Next.js 13/14 treats it as prop directly but wrapping in await is safe in 15.
-    const { id } = await params; 
-    const job = jobs.jobs.find((j) => j.id === id);
+export const revalidate = 60;
 
-    if (!job) {
-        return {
-            title: 'Job Not Found',
-        };
+async function getJobById(id) {
+  try {
+    await connectToDatabase();
+    const dbJob = await Job.findOne({
+      $or: [
+        { customId: id },
+        { slug: id },
+        { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null },
+      ],
+    }).lean();
+
+    if (dbJob) {
+      return {
+        id: dbJob.customId || dbJob.slug || dbJob._id.toString(),
+        slug: dbJob.slug || dbJob.customId,
+        title: dbJob.title,
+        department: dbJob.department,
+        location: dbJob.location,
+        type: dbJob.type,
+        experience: dbJob.experience,
+        salary: dbJob.salary || '',
+        skills: dbJob.skills || [],
+        description: dbJob.description,
+        responsibilities: dbJob.responsibilities || [],
+        requirements: dbJob.requirements || [],
+        benefits: dbJob.benefits || [],
+        isActive: dbJob.isActive,
+        createdAt: dbJob.createdAt,
+      };
     }
+  } catch (err) {
+    console.warn('MongoDB Job detail lookup fallback:', err.message);
+  }
 
-    return {
-        title: `${job.title} | Careers | Maurya Technologies`,
-        description: `Apply for the ${job.title} (${job.type}) role at Maurya Technologies. ${job.description.slice(0, 150)}`,
-        alternates: {
-            canonical: `/careers/${job.id}`,
-        },
-        keywords: [job.title, 'Tech Jobs', 'Developer', job.department, 'Maurya Tech Careers'],
-        openGraph: {
-            title: `${job.title} at Maurya Technologies`,
-            description: job.description,
-            type: 'website',
-            url: `https://mauryatech7.com/careers/${job.id}`,
-        }
-    };
+  return (fallbackJobs.jobs || []).find((j) => j.id === id || j.slug === id);
 }
 
-export default async function JobPostPage({ params }) {
-    const { id } = await params;
-    const job = jobs.jobs.find((j) => j.id === id);
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+  const job = await getJobById(id);
 
-    if (!job || !job.isActive) {
-        notFound();
-    }
-
-    // JSON-LD structured data for Google Jobs AEO/SEO
-    const jsonLd = {
-        "@context": "https://schema.org/",
-        "@type": "JobPosting",
-        "title": job.title,
-        "description": job.description,
-        "identifier": {
-            "@type": "PropertyValue",
-            "name": "Maurya Technologies",
-            "value": job.id
-        },
-        "datePosted": new Date().toISOString().split('T')[0],
-        "employmentType": job.type === 'Full-time' ? 'FULL_TIME' : 'CONTRACTOR',
-        "hiringOrganization": {
-            "@type": "Organization",
-            "name": "Maurya Technologies",
-            "sameAs": "https://mauryatech7.com",
-            "logo": "https://mauryatech7.com/logo.png"
-        },
-        "jobLocationType": job.location.toLowerCase().includes('remote') ? "TELECOMMUTE" : undefined,
-        "applicantLocationRequirements": job.location.toLowerCase().includes('india') ? {
-            "@type": "Country",
-            "name": "India"
-        } : undefined,
-        "jobLocation": {
-            "@type": "Place",
-            "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "IN"
-            }
-        }
+  if (!job) {
+    return {
+      title: 'Position Not Found | Careers | Maurya Technologies Bhopal',
     };
+  }
 
-    return (
-        <>
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-            />
-            <JobDetailPage job={job} />
-        </>
-    );
+  // Generate 25+ dynamic high-ranking keywords for this role in Bhopal
+  const roleKeywords = [
+    job.title,
+    `${job.title} Jobs in Bhopal`,
+    `${job.title} Bhopal`,
+    `Jobs in Bhopal`,
+    `IT Jobs in Bhopal`,
+    `Software Developer Jobs in Bhopal`,
+    `Tech Jobs Bhopal Madhya Pradesh`,
+    `${job.title} Hiring Bhopal`,
+    `${job.title} Internship Bhopal 2026`,
+    `IT Fresher Jobs in Bhopal`,
+    `Software Company in Bhopal Hiring`,
+    `${job.department} Careers Bhopal`,
+    ...(job.skills || []),
+    ...(job.skills || []).map((s) => `${s} Jobs in Bhopal`),
+    'Maurya Technologies Bhopal Careers',
+    'Best IT Companies in Bhopal for Freshers',
+    'Tech Internships in Bhopal',
+  ];
+
+  return {
+    title: `${job.title} (${job.type}) in Bhopal | Maurya Technologies`,
+    description: `Apply for ${job.title} (${job.type}, ${job.experience}) at Maurya Technologies in Bhopal, MP, India. Tech Stack: ${(job.skills || []).join(', ')}. ${job.description.slice(0, 140)}...`,
+    alternates: {
+      canonical: `/careers/${job.id || job.slug}`,
+    },
+    keywords: roleKeywords,
+    openGraph: {
+      title: `Hiring in Bhopal: ${job.title} | Maurya Technologies`,
+      description: `Join Maurya Technologies in Bhopal as a ${job.title} (${job.type}). ${job.location}. Best-in-class compensation & fast career growth.`,
+      url: `https://maurya-tech.com/careers/${job.id || job.slug}`,
+      type: 'website',
+      siteName: 'Maurya Technologies Bhopal Careers',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `Hiring in Bhopal: ${job.title} at Maurya Technologies`,
+      description: `Apply now for ${job.title} (${job.type}) in Bhopal, MP, India.`,
+    },
+  };
+}
+
+export default async function JobDetail({ params }) {
+  const { id } = await params;
+  const job = await getJobById(id);
+
+  if (!job) {
+    notFound();
+  }
+
+  // Google Jobs Structured Data (JSON-LD) with Bhopal Location
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'JobPosting',
+    title: `${job.title} in Bhopal`,
+    description: `<p>${job.description}</p><p><strong>Job Location:</strong> Bhopal, Madhya Pradesh, India (Hybrid | First 3 Months Office Mandate)</p><h3>Key Responsibilities:</h3><ul>${(job.responsibilities || []).map((r) => `<li>${r}</li>`).join('')}</ul><h3>Qualifications & Requirements:</h3><ul>${(job.requirements || []).map((req) => `<li>${req}</li>`).join('')}</ul>`,
+    datePosted: job.createdAt ? new Date(job.createdAt).toISOString() : new Date().toISOString(),
+    validThrough: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+    employmentType: job.type === 'Internship' ? 'INTERN' : 'FULL_TIME',
+    hiringOrganization: {
+      '@type': 'Organization',
+      name: 'Maurya Technologies',
+      sameAs: 'https://maurya-tech.com',
+      logo: 'https://maurya-tech.com/favicon.ico',
+    },
+    jobLocation: {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Bhopal',
+        addressRegion: 'Madhya Pradesh',
+        addressCountry: 'IN',
+      },
+    },
+    skills: (job.skills || []).join(', '),
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <JobDetailPage job={job} />
+    </>
+  );
 }
