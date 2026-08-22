@@ -11,7 +11,6 @@ export * from './contacts';
 export * from './policies';
 export * from './seo';
 export * from './clients';
-export * from './ads';
 export * from './plans';
 export * from './products';
 export * from './brands';

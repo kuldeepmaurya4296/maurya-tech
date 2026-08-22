@@ -1,12 +1,15 @@
+import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { jobs as fallbackJobs } from '@/data/jobs';
 import { JobDetailPage } from '@/components/pages/careers/JobDetailPage';
 import connectToDatabase from '@/lib/mongodb';
 import Job from '@/lib/models/Job';
+import { serializeJsonLd } from '@/lib/utils';
 
 export const revalidate = 60;
 
-async function getJobById(id) {
+// Cached so generateMetadata and the page share one query per request.
+const getJobById = cache(async (id) => {
   try {
     await connectToDatabase();
     const dbJob = await Job.findOne({
@@ -41,7 +44,7 @@ async function getJobById(id) {
   }
 
   return (fallbackJobs.jobs || []).find((j) => j.id === id || j.slug === id);
-}
+});
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -76,7 +79,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `${job.title} (${job.type}) in Bhopal | Maurya Technologies`,
-    description: `Apply for ${job.title} (${job.type}, ${job.experience}) at Maurya Technologies in Bhopal, MP, India. Tech Stack: ${(job.skills || []).join(', ')}. ${job.description.slice(0, 140)}...`,
+    description: `Apply for ${job.title} (${job.type}, ${job.experience}) at Maurya Technologies in Bhopal, MP, India. Tech Stack: ${(job.skills || []).join(', ')}. ${(job.description || '').slice(0, 140)}...`,
     alternates: {
       canonical: `/careers/${job.id || job.slug}`,
     },
@@ -135,7 +138,7 @@ export default async function JobDetail({ params }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <JobDetailPage job={job} />
     </>

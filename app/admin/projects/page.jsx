@@ -238,6 +238,7 @@ export default function AdminProjectsPage() {
                         <Link
                           href={`/projects/${p.slug}`}
                           target="_blank"
+                          rel="noopener noreferrer"
                           className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400"
                           title="View Case Study"
                         >

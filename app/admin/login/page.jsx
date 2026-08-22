@@ -150,15 +150,15 @@ function AdminLoginForm() {
             {viewMode === 'forgot'
               ? 'Reset Password & PIN'
               : step === 2
-              ? '2-Step Security Verification'
-              : 'Maurya Tech Admin Portal'}
+                ? '2-Step Security Verification'
+                : 'Maurya Tech Admin Portal'}
           </h1>
           <p className="text-slate-400 text-xs mt-1.5">
             {viewMode === 'forgot'
               ? 'Enter your registered admin email to receive recovery instructions'
               : step === 2
-              ? 'Enter your 6-digit Master Security PIN to complete authorization'
-              : 'Sign in to manage applications, CMS content & analytics'}
+                ? 'Enter your 6-digit Master Security PIN to complete authorization'
+                : 'Sign in to manage applications, CMS content & analytics'}
           </p>
         </div>
 
@@ -208,7 +208,7 @@ function AdminLoginForm() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="kuldeepmaurya4296@gmail.com"
+                    placeholder="Enter Email or Username"
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/60 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition text-sm font-mono"
                   />
                 </div>
@@ -266,7 +266,7 @@ function AdminLoginForm() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="kuldeepmaurya4296@gmail.com"
+                    placeholder="Enter Email or Username"
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/60 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition text-sm"
                   />
                 </div>

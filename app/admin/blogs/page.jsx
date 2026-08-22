@@ -220,6 +220,7 @@ export default function AdminBlogsPage() {
                         <Link
                           href={`/blog/${p.slug}`}
                           target="_blank"
+                          rel="noopener noreferrer"
                           className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400"
                           title="View Article"
                         >

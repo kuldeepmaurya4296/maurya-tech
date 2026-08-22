@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Check, ExternalLink } from 'lucide-react';
+import Image from 'next/image';
 
 export const ProjectsPage = ({ projectsData: serverProjectsData }) => {
     const data = serverProjectsData || projectsData;
@@ -75,10 +76,12 @@ export const ProjectsPage = ({ projectsData: serverProjectsData }) => {
                             {/* Thumbnail */}
                             {project.thumbnail && (
                                 <Link href={`/projects/${project.slug}`} className="block relative aspect-video overflow-hidden">
-                                    <img
+                                    <Image
                                         src={project.thumbnail}
                                         alt={project.title}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </Link>

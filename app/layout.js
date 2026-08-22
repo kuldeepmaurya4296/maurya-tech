@@ -4,6 +4,8 @@ import Providers from "./providers";
 import { globalKeywordsList, seoData } from "@/data/seo-keywords";
 import { Analytics } from "@vercel/analytics/next";
 import AnalyticsTracker from "@/components/effects/AnalyticsTracker";
+import { serializeJsonLd } from "@/lib/utils";
+import { ThemeScript } from "@/contexts/ThemeContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -34,7 +36,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: light)", color: "#0a0f1d" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0f1d" },
   ],
 };
@@ -92,6 +94,16 @@ export const metadata = {
   alternates: {
     canonical: '/',
   },
+  // public/site.webmanifest and the sized PNG icons existed but were never
+  // linked, so no browser or install prompt could find them.
+  manifest: '/site.webmanifest',
+  icons: {
+    icon: [
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/web-app-manifest-192x192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
   category: 'technology',
 };
 
@@ -116,16 +128,19 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-theme="engineer-dark" className="dark" suppressHydrationWarning>
       <head>
+        {/* Pre-paint theme sync: applies the stored theme before first paint
+            so the CSS default never flashes. Validates against data/themes.js. */}
+        <ThemeScript />
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
       </head>
-      <body className={`${inter.variable} ${montserrat.variable} ${openSans.variable} ${firaCode.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${inter.variable} ${montserrat.variable} ${openSans.variable} ${firaCode.variable} antialiased bg-[#0a0f1d] text-[#f8fafc]`} suppressHydrationWarning>
         <Providers>{children}</Providers>
         <AnalyticsTracker />
         <Analytics />

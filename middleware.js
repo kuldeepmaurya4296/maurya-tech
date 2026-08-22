@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-maurya-tech-2026-production-secure';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  throw new Error(
+    'JWT_SECRET is missing or too short. Set a random secret of at least 32 characters (openssl rand -base64 48) in your environment.'
+  );
+}
+
 const secretKey = new TextEncoder().encode(JWT_SECRET);
 
 export async function middleware(request) {

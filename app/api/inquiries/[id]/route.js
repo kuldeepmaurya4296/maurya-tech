@@ -21,7 +21,8 @@ export async function GET(req, { params }) {
 
     return NextResponse.json({ success: true, inquiry });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('API error:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -44,7 +45,8 @@ export async function PUT(req, { params }) {
 
     return NextResponse.json({ success: true, inquiry: updatedInquiry });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('API error:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -62,6 +64,7 @@ export async function DELETE(req, { params }) {
     await Inquiry.findByIdAndDelete(id);
     return NextResponse.json({ success: true, message: 'Inquiry deleted successfully' });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('API error:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }

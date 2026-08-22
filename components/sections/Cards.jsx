@@ -3,6 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import * as LucideIcons from 'lucide-react';
+import Image from 'next/image';
 
 
 
@@ -117,9 +118,11 @@ export const TestimonialCard = ({
       </blockquote>
       <div className="flex items-center gap-4">
         {image ? (
-          <img
+          <Image
             src={image}
             alt={author}
+            width={48}
+            height={48}
             className="w-12 h-12 rounded-full object-cover"
           />
         ) : (

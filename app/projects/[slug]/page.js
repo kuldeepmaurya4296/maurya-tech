@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { ProjectDetailPage } from '@/components/pages/projects/ProjectDetailPage';
 import { projects as fallbackProjects } from '@/data/projects';
@@ -6,7 +7,8 @@ import Project from '@/lib/models/Project';
 
 export const revalidate = 60;
 
-async function getProjectBySlug(slug) {
+// Cached so generateMetadata and the page share one query per request.
+const getProjectBySlug = cache(async (slug) => {
   try {
     await connectToDatabase();
     const project = await Project.findOne({
@@ -25,7 +27,7 @@ async function getProjectBySlug(slug) {
   }
 
   return (fallbackProjects.projects || []).find((p) => p.slug === slug || p.id === slug);
-}
+});
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;

@@ -47,6 +47,6 @@ export async function POST(req) {
     return NextResponse.json({ success: true, job: newJob }, { status: 201 });
   } catch (error) {
     console.error('Create job error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }

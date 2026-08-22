@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { Layout } from '@/components/layout';
 import { Section } from '@/components/sections';
 import { useData } from '@/contexts/DataContext';
@@ -359,7 +360,7 @@ export function PricingPage({ pricingData: serverPricingData }) {
                                         className="cursor-pointer"
                                         asChild
                                     >
-                                        <a href="/products">View All Products</a>
+                                        <Link href="/products">View All Products</Link>
                                     </Button>
                                 </div>
                             </CardContent>

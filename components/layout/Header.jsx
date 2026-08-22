@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown } from 'lucide-react';
@@ -33,9 +34,10 @@ const navItems = [
 ];
 
 // Dropdown Component
-const NavDropdown = ({ item, isActive, scrolled }) => {
+const NavDropdown = ({ item, isActive }) => {
   const [isOpen, setIsOpen] = useState(false);
   const timeoutRef = useRef(null);
+  const menuId = `nav-menu-${item.name.toLowerCase().replace(/\s+/g, '-')}`;
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -46,13 +48,30 @@ const NavDropdown = ({ item, isActive, scrolled }) => {
     timeoutRef.current = setTimeout(() => setIsOpen(false), 150);
   };
 
+  // Clear the close timer on unmount so it cannot fire against a gone component.
+  useEffect(() => () => clearTimeout(timeoutRef.current), []);
+
   return (
     <div
       className="relative"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      // Keyboard and screen-reader users never trigger mouseenter, so the menu
+      // also opens on focus and closes on Escape or focus leaving the group.
+      onFocus={handleMouseEnter}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setIsOpen(false);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') setIsOpen(false);
+      }}
     >
       <button
+        type="button"
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-controls={menuId}
+        onClick={() => setIsOpen((open) => !open)}
         className={cn(
           'px-4 py-2 rounded-md font-medium text-sm transition-colors flex items-center gap-1',
           isActive
@@ -74,6 +93,7 @@ const NavDropdown = ({ item, isActive, scrolled }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.15 }}
+            id={menuId}
             className="absolute top-full left-0 pt-2 z-50"
           >
             <div className="w-64 bg-card rounded-xl border border-border shadow-xl overflow-hidden">
@@ -109,7 +129,6 @@ export const Header = () => {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [mounted, setMounted] = useState(false);
   const [expandedMobile, setExpandedMobile] = useState(null);
 
@@ -123,41 +142,48 @@ export const Header = () => {
     setExpandedMobile(null);
   }, [pathname]);
 
+  // The previous scroll position and the menu state live in refs, not state:
+  // keeping them in the effect's dependency array made every scroll frame tear
+  // down and re-attach the listener.
+  const lastScrollY = useRef(0);
+  const isOpenRef = useRef(isOpen);
+
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
+
   useEffect(() => {
     let ticking = false;
 
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
+      if (ticking) return;
+      ticking = true;
 
-          // Add background when scrolled past 20px
-          setScrolled(currentScrollY > 20);
+      window.requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
 
-          // Hide/show navbar based on scroll direction
-          if (!isOpen) {
-            if (currentScrollY < 80) {
-              setIsHidden(false);
-            } else {
-              if (currentScrollY > lastScrollY && currentScrollY > 100) {
-                setIsHidden(true);
-              } else if (currentScrollY < lastScrollY) {
-                setIsHidden(false);
-              }
-            }
+        // Add background when scrolled past 20px
+        setScrolled(currentScrollY > 20);
+
+        // Hide/show navbar based on scroll direction
+        if (!isOpenRef.current) {
+          if (currentScrollY < 80) {
+            setIsHidden(false);
+          } else if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+            setIsHidden(true);
+          } else if (currentScrollY < lastScrollY.current) {
+            setIsHidden(false);
           }
+        }
 
-          setLastScrollY(currentScrollY);
-          ticking = false;
-        });
-
-        ticking = true;
-      }
+        lastScrollY.current = currentScrollY;
+        ticking = false;
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isOpen, lastScrollY]);
+  }, []);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -195,7 +221,7 @@ export const Header = () => {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
-              <img src="/logo.png" alt="Maurya Tech" className="w-10 h-10 object-contain" />
+              <Image src="/logo.png" alt="Maurya Tech" width={40} height={40} priority className="w-10 h-10 object-contain" />
               <div className="hidden sm:block">
                 <span className="font-heading font-bold text-lg text-foreground">Maurya</span>
                 <span className="font-heading font-medium text-lg text-muted-foreground ml-1">Tech</span>
@@ -210,7 +236,6 @@ export const Header = () => {
                     key={item.name}
                     item={item}
                     isActive={isItemActive(item)}
-                    scrolled={scrolled}
                   />
                 ) : (
                   <Link

@@ -42,6 +42,14 @@ export async function POST(req) {
     }
 
     const body = await req.json();
+
+    if (!body?.title || typeof body.title !== 'string') {
+      return NextResponse.json(
+        { success: false, message: 'A title is required.' },
+        { status: 400 }
+      );
+    }
+
     await connectToDatabase();
 
     const slug =
@@ -58,6 +66,7 @@ export async function POST(req) {
 
     return NextResponse.json({ success: true, post: newPost }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('API error:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }

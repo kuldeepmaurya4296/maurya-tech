@@ -28,11 +28,16 @@ export default function SmoothScroll() {
       }
 
       reqId = requestAnimationFrame(raf);
+
+      // Tell CSS that Lenis owns scrolling, so native `scroll-behavior: smooth`
+      // stops competing with it on anchor jumps and scrollIntoView calls.
+      document.documentElement.setAttribute('data-lenis-active', '');
     });
 
     return () => {
       if (reqId) cancelAnimationFrame(reqId);
       if (lenisInstance) lenisInstance.destroy();
+      document.documentElement.removeAttribute('data-lenis-active');
     };
   }, []);
 

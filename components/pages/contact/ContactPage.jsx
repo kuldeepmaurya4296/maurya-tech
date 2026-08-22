@@ -109,18 +109,18 @@ export function ContactPage({ contactData: serverContactData }) {
                                         </div>
                                         <div className="grid md:grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Your Name</label>
-                                                <Input placeholder="John Doe" required value={userForm.name} onChange={e => setUserForm({ ...userForm, name: e.target.value })} />
+                                                <label htmlFor="user-form-name" className="text-sm font-medium">Your Name</label>
+                                                <Input id="user-form-name" placeholder="John Doe" required value={userForm.name} onChange={e => setUserForm({ ...userForm, name: e.target.value })} />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Email Address</label>
-                                                <Input type="email" placeholder="john@example.com" required value={userForm.email} onChange={e => setUserForm({ ...userForm, email: e.target.value })} />
+                                                <label htmlFor="user-form-email" className="text-sm font-medium">Email Address</label>
+                                                <Input id="user-form-email" type="email" placeholder="john@example.com" required value={userForm.email} onChange={e => setUserForm({ ...userForm, email: e.target.value })} />
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium">Subject</label>
+                                            <label htmlFor="user-form-subject" className="text-sm font-medium">Subject</label>
                                             <Select value={userForm.subject} onValueChange={val => setUserForm({ ...userForm, subject: val })}>
-                                                <SelectTrigger>
+                                                <SelectTrigger id="user-form-subject">
                                                     <SelectValue placeholder="Select a topic" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -132,8 +132,8 @@ export function ContactPage({ contactData: serverContactData }) {
                                             </Select>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium">Message</label>
-                                            <Textarea placeholder="Tell us what you need..." rows={4} required value={userForm.message} onChange={e => setUserForm({ ...userForm, message: e.target.value })} />
+                                            <label htmlFor="user-form-message" className="text-sm font-medium">Message</label>
+                                            <Textarea id="user-form-message" placeholder="Tell us what you need..." rows={4} required value={userForm.message} onChange={e => setUserForm({ ...userForm, message: e.target.value })} />
                                         </div>
                                         <Button type="submit" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={loading}>
                                             {loading ? 'Sending...' : 'Send Message'} <ArrowRight className="w-4 h-4 ml-2" />
@@ -150,29 +150,29 @@ export function ContactPage({ contactData: serverContactData }) {
                                         </div>
                                         <div className="grid md:grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Contact Name</label>
-                                                <Input placeholder="Full Name" required value={companyForm.contactName} onChange={e => setCompanyForm({ ...companyForm, contactName: e.target.value })} />
+                                                <label htmlFor="company-form-contact-name" className="text-sm font-medium">Contact Name</label>
+                                                <Input id="company-form-contact-name" placeholder="Full Name" required value={companyForm.contactName} onChange={e => setCompanyForm({ ...companyForm, contactName: e.target.value })} />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Work Email</label>
-                                                <Input type="email" placeholder="name@company.com" required value={companyForm.workEmail} onChange={e => setCompanyForm({ ...companyForm, workEmail: e.target.value })} />
-                                            </div>
-                                        </div>
-                                        <div className="grid md:grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-medium">Company Name</label>
-                                                <Input placeholder="Company Inc." required value={companyForm.companyName} onChange={e => setCompanyForm({ ...companyForm, companyName: e.target.value })} />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-medium">Job Title</label>
-                                                <Input placeholder="e.g. CTO, Product Manager" value={companyForm.jobTitle} onChange={e => setCompanyForm({ ...companyForm, jobTitle: e.target.value })} />
+                                                <label htmlFor="company-form-work-email" className="text-sm font-medium">Work Email</label>
+                                                <Input id="company-form-work-email" type="email" placeholder="name@company.com" required value={companyForm.workEmail} onChange={e => setCompanyForm({ ...companyForm, workEmail: e.target.value })} />
                                             </div>
                                         </div>
                                         <div className="grid md:grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Service Needed</label>
+                                                <label htmlFor="company-form-company-name" className="text-sm font-medium">Company Name</label>
+                                                <Input id="company-form-company-name" placeholder="Company Inc." required value={companyForm.companyName} onChange={e => setCompanyForm({ ...companyForm, companyName: e.target.value })} />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label htmlFor="company-form-job-title" className="text-sm font-medium">Job Title</label>
+                                                <Input id="company-form-job-title" placeholder="e.g. CTO, Product Manager" value={companyForm.jobTitle} onChange={e => setCompanyForm({ ...companyForm, jobTitle: e.target.value })} />
+                                            </div>
+                                        </div>
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label htmlFor="company-form-service" className="text-sm font-medium">Service Needed</label>
                                                 <Select value={companyForm.service} onValueChange={val => setCompanyForm({ ...companyForm, service: val })}>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger id="company-form-service">
                                                         <SelectValue placeholder="Select Service" />
                                                     </SelectTrigger>
                                                     <SelectContent>
@@ -181,9 +181,9 @@ export function ContactPage({ contactData: serverContactData }) {
                                                 </Select>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Estimated Budget</label>
+                                                <label htmlFor="company-form-budget" className="text-sm font-medium">Estimated Budget</label>
                                                 <Select value={companyForm.budget} onValueChange={val => setCompanyForm({ ...companyForm, budget: val })}>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger id="company-form-budget">
                                                         <SelectValue placeholder="Select Budget" />
                                                     </SelectTrigger>
                                                     <SelectContent>
@@ -193,8 +193,8 @@ export function ContactPage({ contactData: serverContactData }) {
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium">Project Details</label>
-                                            <Textarea placeholder="Describe your project goals, timeline, and requirements..." rows={4} required value={companyForm.details} onChange={e => setCompanyForm({ ...companyForm, details: e.target.value })} />
+                                            <label htmlFor="company-form-details" className="text-sm font-medium">Project Details</label>
+                                            <Textarea id="company-form-details" placeholder="Describe your project goals, timeline, and requirements..." rows={4} required value={companyForm.details} onChange={e => setCompanyForm({ ...companyForm, details: e.target.value })} />
                                         </div>
                                         <Button type="submit" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={loading}>
                                             {loading ? 'Sending...' : 'Request Consultation'} <ArrowRight className="w-4 h-4 ml-2" />
@@ -211,23 +211,23 @@ export function ContactPage({ contactData: serverContactData }) {
                                         </div>
                                         <div className="grid md:grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Full Name</label>
-                                                <Input placeholder="Name" required value={salesForm.fullName} onChange={e => setSalesForm({ ...salesForm, fullName: e.target.value })} />
+                                                <label htmlFor="sales-form-full-name" className="text-sm font-medium">Full Name</label>
+                                                <Input id="sales-form-full-name" placeholder="Name" required value={salesForm.fullName} onChange={e => setSalesForm({ ...salesForm, fullName: e.target.value })} />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Official Email</label>
-                                                <Input type="email" placeholder="email@organization.com" required value={salesForm.officialEmail} onChange={e => setSalesForm({ ...salesForm, officialEmail: e.target.value })} />
+                                                <label htmlFor="sales-form-official-email" className="text-sm font-medium">Official Email</label>
+                                                <Input id="sales-form-official-email" type="email" placeholder="email@organization.com" required value={salesForm.officialEmail} onChange={e => setSalesForm({ ...salesForm, officialEmail: e.target.value })} />
                                             </div>
                                         </div>
                                         <div className="grid md:grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Organization / Agency</label>
-                                                <Input placeholder="Organization Name" required value={salesForm.organization} onChange={e => setSalesForm({ ...salesForm, organization: e.target.value })} />
+                                                <label htmlFor="sales-form-organization" className="text-sm font-medium">Organization / Agency</label>
+                                                <Input id="sales-form-organization" placeholder="Organization Name" required value={salesForm.organization} onChange={e => setSalesForm({ ...salesForm, organization: e.target.value })} />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Partnership Type</label>
+                                                <label htmlFor="sales-form-partnership-type" className="text-sm font-medium">Partnership Type</label>
                                                 <Select value={salesForm.partnershipType} onValueChange={val => setSalesForm({ ...salesForm, partnershipType: val })}>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger id="sales-form-partnership-type">
                                                         <SelectValue placeholder="Select Type" />
                                                     </SelectTrigger>
                                                     <SelectContent>
@@ -241,8 +241,8 @@ export function ContactPage({ contactData: serverContactData }) {
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium">Message</label>
-                                            <Textarea placeholder="How would you like to partner with us?" rows={4} required value={salesForm.message} onChange={e => setSalesForm({ ...salesForm, message: e.target.value })} />
+                                            <label htmlFor="sales-form-message" className="text-sm font-medium">Message</label>
+                                            <Textarea id="sales-form-message" placeholder="How would you like to partner with us?" rows={4} required value={salesForm.message} onChange={e => setSalesForm({ ...salesForm, message: e.target.value })} />
                                         </div>
                                         <Button type="submit" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={loading}>
                                             {loading ? 'Sending...' : 'Contact Sales Team'} <ArrowRight className="w-4 h-4 ml-2" />

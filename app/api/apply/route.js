@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { transporter, mailOptions } from '@/lib/emailService';
+import { sendMail, escapeHtml } from '@/lib/emailService';
 import connectToDatabase from '@/lib/mongodb';
 import Application from '@/lib/models/Application';
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
@@ -94,19 +94,19 @@ export async function POST(req) {
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
         <h2 style="color: #0f172a;">New Job Application Received</h2>
-        <p><strong>Applicant Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-        <p><strong>Phone:</strong> ${phone}</p>
-        <p><strong>Role Applied For:</strong> ${data.jobTitle || 'General'}</p>
+        <p><strong>Applicant Name:</strong> ${escapeHtml(name)}</p>
+        <p><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>
+        <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
+        <p><strong>Role Applied For:</strong> ${escapeHtml(data.jobTitle) || 'General'}</p>
         <hr style="border: none; border-top: 1px solid #eaeaea; margin: 15px 0;" />
-        <p><strong>LinkedIn:</strong> ${linkedin ? `<a href="${linkedin}" target="_blank">${linkedin}</a>` : 'Not provided'}</p>
-        <p><strong>Resume:</strong> <a href="${resume}" target="_blank" style="background-color: #0284c7; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none;">View Resume</a></p>
+        <p><strong>LinkedIn:</strong> ${linkedin ? `<a href="${escapeHtml(linkedin)}" target="_blank" rel="noopener noreferrer">${escapeHtml(linkedin)}</a>` : 'Not provided'}</p>
+        <p><strong>Resume:</strong> <a href="${escapeHtml(resume)}" target="_blank" rel="noopener noreferrer" style="background-color: #0284c7; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none;">View Resume</a></p>
         ${
           data.coverLetter
             ? `
           <div style="background-color: #f8fafc; padding: 12px; border-radius: 6px; margin-top: 15px;">
             <p><strong>Cover Letter / Note:</strong></p>
-            <p style="white-space: pre-wrap;">${data.coverLetter}</p>
+            <p style="white-space: pre-wrap;">${escapeHtml(data.coverLetter)}</p>
           </div>
         `
             : ''
@@ -114,16 +114,7 @@ export async function POST(req) {
       </div>
     `;
 
-    try {
-      await transporter.sendMail({
-        ...mailOptions,
-        subject,
-        html: htmlContent,
-        replyTo: email,
-      });
-    } catch (mailError) {
-      console.error('SMTP Apply Email Error:', mailError);
-    }
+    await sendMail({ subject, html: htmlContent, replyTo: email });
 
     return NextResponse.json(
       {

@@ -1,11 +1,23 @@
 @import "tailwindcss";
 
 html {
+  /* Lenis drives scrolling on pointer devices; native smooth-scroll fights it,
+     so it only applies when Lenis has not taken over. */
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html[data-lenis-active] {
+  scroll-behavior: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {
@@ -392,59 +404,10 @@ body {
     --navbar-border: 0 0% 90%;
   }
 
-  /* Theme 5: Enterprise Growth - Forest & Amber */
-  [data-theme="enterprise-growth"] {
-    --background: 40 6% 97%;
-    --foreground: 140 50% 10%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 140 50% 10%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 140 50% 10%;
-
-    --primary: 163 88% 20%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 40 6% 93%;
-    --secondary-foreground: 163 88% 20%;
-
-    --muted: 40 6% 93%;
-    --muted-foreground: 140 20% 40%;
-
-    --accent: 38 92% 50%;
-    --accent-foreground: 140 50% 10%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 40 6% 90%;
-    --input: 40 6% 90%;
-    --ring: 38 92% 50%;
-
-    --gradient-primary: linear-gradient(135deg, hsl(163, 88%, 20%) 0%, hsl(163, 88%, 30%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(38, 92%, 50%) 0%, hsl(45, 93%, 47%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(163, 88%, 20%) 0%, hsl(163, 88%, 10%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0, 0%, 100%) 0%, hsl(40, 6%, 98%) 100%);
-
-    --shadow-glow: 0 0 40px hsl(38, 92%, 50%, 0.3);
-
-    --hero-bg: 163 88% 20%;
-    --hero-text: 0 0% 100%;
-    --hero-muted: 163 50% 85%;
-
-    --navbar-bg: 0 0% 100%;
-    --navbar-text: 140 50% 10%;
-    --navbar-border: 40 6% 90%;
-  }
-
   * {
     @apply border-border;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
 
   body {
     @apply bg-background text-foreground antialiased;

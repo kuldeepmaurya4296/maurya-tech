@@ -34,6 +34,6 @@ export async function GET(req) {
       },
     });
   } catch (error) {
-    return NextResponse.json({ authenticated: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ authenticated: false }, { status: 500 });
   }
 }

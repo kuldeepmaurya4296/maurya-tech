@@ -187,11 +187,11 @@ export const JobApplicationForm = ({ jobTitle, jobId }) => {
       <form onSubmit={handleSubmit} className="space-y-4 text-xs">
         {/* Full Name */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-foreground">
+          <label htmlFor="apply-name" className="text-xs font-semibold text-foreground">
             Full Name <span className="text-destructive">*</span>
           </label>
           <Input
-            name="name"
+            id="apply-name" name="name"
             placeholder="e.g. Aman Sharma"
             required
             value={formData.name}
@@ -202,12 +202,12 @@ export const JobApplicationForm = ({ jobTitle, jobId }) => {
 
         {/* Email Address */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-foreground">
+          <label htmlFor="apply-email" className="text-xs font-semibold text-foreground">
             Email Address <span className="text-destructive">*</span>
           </label>
           <Input
             type="email"
-            name="email"
+            id="apply-email" name="email"
             placeholder="e.g. aman.sharma@example.com"
             required
             value={formData.email}
@@ -218,12 +218,12 @@ export const JobApplicationForm = ({ jobTitle, jobId }) => {
 
         {/* Phone Number */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-foreground">
+          <label htmlFor="apply-phone" className="text-xs font-semibold text-foreground">
             Phone Number <span className="text-destructive">*</span>
           </label>
           <Input
             type="tel"
-            name="phone"
+            id="apply-phone" name="phone"
             placeholder="e.g. +91 98765 43210"
             required
             value={formData.phone}
@@ -234,12 +234,12 @@ export const JobApplicationForm = ({ jobTitle, jobId }) => {
 
         {/* LinkedIn Profile */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-foreground">
+          <label htmlFor="apply-linkedin" className="text-xs font-semibold text-foreground">
             LinkedIn / GitHub / Portfolio Link
           </label>
           <Input
             type="url"
-            name="linkedin"
+            id="apply-linkedin" name="linkedin"
             placeholder="https://linkedin.com/in/username or github.com/..."
             value={formData.linkedin}
             onChange={handleChange}
@@ -249,14 +249,14 @@ export const JobApplicationForm = ({ jobTitle, jobId }) => {
 
         {/* Resume: Dual Option (Upload or Link) */}
         <div className="space-y-2 pt-1">
-          <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+          <span className="text-xs font-semibold text-foreground flex items-center justify-between">
             <span>
               Resume / CV <span className="text-destructive">*</span>
             </span>
             <span className="text-[11px] text-muted-foreground font-normal">
               PDF, DOCX or Drive Link
             </span>
-          </label>
+          </span>
 
           {/* Option 1: File Upload */}
           <div>
@@ -288,6 +288,7 @@ export const JobApplicationForm = ({ jobTitle, jobId }) => {
               )}
               <input
                 type="file"
+                aria-label="Upload resume file (PDF, DOC or DOCX, max 10MB)"
                 accept=".pdf,.doc,.docx"
                 className="hidden"
                 disabled={uploading}
@@ -313,7 +314,8 @@ export const JobApplicationForm = ({ jobTitle, jobId }) => {
             <Input
               ref={linkInputRef}
               type="url"
-              name="resume"
+              id="apply-resume" name="resume"
+              aria-label="Resume link (Google Drive, Dropbox or Notion URL)"
               placeholder="Paste Google Drive / Dropbox / Notion link..."
               required
               value={formData.resume}
@@ -337,12 +339,12 @@ export const JobApplicationForm = ({ jobTitle, jobId }) => {
 
         {/* Cover Letter / Note */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-foreground">
+          <label htmlFor="apply-cover-letter" className="text-xs font-semibold text-foreground">
             Cover Letter / Why Are You a Great Fit?{' '}
             <span className="text-muted-foreground font-normal">(Optional)</span>
           </label>
           <Textarea
-            name="coverLetter"
+            id="apply-cover-letter" name="coverLetter"
             placeholder="Highlight relevant projects, live apps, or why you want to work with Maurya Technologies..."
             rows={3}
             value={formData.coverLetter}

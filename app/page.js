@@ -2,6 +2,7 @@ import React from 'react';
 import { HomePage } from '@/components/pages/home/HomePage';
 import { home as homeData } from '@/data/home';
 import { clients as clientData } from '@/data/clients';
+import { serializeJsonLd } from '@/lib/utils';
 
 export const metadata = {
   title: 'Home',
@@ -37,7 +38,7 @@ export default function Index() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <HomePage homeData={homeData} clientData={clientData} />
     </>

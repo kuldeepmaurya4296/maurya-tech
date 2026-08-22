@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useParams, notFound } from 'next/navigation';
 import { Layout } from '@/components/layout';
 import { Section } from '@/components/sections';
@@ -59,11 +60,11 @@ export function ProductDetailPage() {
                     >
                         {/* Breadcrumb */}
                         <div className="flex items-center gap-2 text-sm text-hero-muted mb-6">
-                            <a href="/products" className="hover:text-accent transition-colors">Products</a>
+                            <Link href="/products" className="hover:text-accent transition-colors">Products</Link>
                             <ChevronRight className="w-4 h-4" />
-                            <a href={`/products?category=${category?.id}`} className="hover:text-accent transition-colors">
+                            <Link href={`/products?category=${category?.id}`} className="hover:text-accent transition-colors">
                                 {category?.title}
-                            </a>
+                            </Link>
                             <ChevronRight className="w-4 h-4" />
                             <span className="text-hero-foreground">{product.title}</span>
                         </div>

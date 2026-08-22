@@ -327,6 +327,7 @@ export default function AdminJobsPage() {
                         <Link
                           href={`/careers/${job.id || job._id}`}
                           target="_blank"
+                          rel="noopener noreferrer"
                           className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 transition"
                           title="View Live Listing"
                         >

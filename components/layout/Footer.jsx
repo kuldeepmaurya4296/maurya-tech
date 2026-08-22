@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { contacts as contactData } from '@/data/contacts';
 import { Mail, Phone, MapPin, Globe, Github, Linkedin, Facebook, Instagram, Sun, Moon } from 'lucide-react';
 import { seoData } from '@/data/seo-keywords';
@@ -37,7 +38,7 @@ export const Footer = () => {
             {/* Brand Section */}
             <div className="space-y-4">
               <Link href="/" className="flex items-center gap-2">
-                <img src="/logo.png" alt="Maurya Tech" className="w-8 h-8 object-contain" />
+                <Image src="/logo.png" alt="Maurya Tech" width={32} height={32} className="w-8 h-8 object-contain" />
                 <div>
                   <span className="font-heading font-bold text-lg text-foreground">Maurya</span>
                   <span className="font-heading font-medium text-lg text-accent ml-1">Tech</span>

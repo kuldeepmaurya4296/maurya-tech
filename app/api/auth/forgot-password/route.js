@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import connectToDatabase from '@/lib/mongodb';
 import User from '@/lib/models/User';
-import { transporter, mailOptions } from '@/lib/emailService';
+import { sendMail } from '@/lib/emailService';
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
 import { logSecurityEvent } from '@/lib/securityLogger';
 
@@ -92,16 +92,7 @@ export async function POST(req) {
       </div>
     `;
 
-    try {
-      await transporter.sendMail({
-        ...mailOptions,
-        to: user.email,
-        subject,
-        html,
-      });
-    } catch (mailError) {
-      console.error('Password reset email error:', mailError);
-    }
+    await sendMail({ to: user.email, subject, html });
 
     logSecurityEvent({
       eventType: 'PASSWORD_RESET_LINK_DISPATCHED',

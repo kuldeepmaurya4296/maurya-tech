@@ -6,6 +6,8 @@ import Project from '@/lib/models/Project';
 import Service from '@/lib/models/Service';
 import Post from '@/lib/models/Post';
 import { hashPassword, verifyToken } from '@/lib/auth';
+import { logSecurityEvent } from '@/lib/securityLogger';
+import { getClientIp } from '@/lib/rateLimit';
 
 import { jobs as initialJobs } from '@/data/jobs';
 import { projects as initialProjects } from '@/data/projects';
@@ -14,26 +16,53 @@ import { posts as initialPosts } from '@/data/posts';
 
 export async function POST(req) {
   try {
+    // Content seeding mutates the live database and, when bootstrapping, can
+    // create the first superadmin. It must never be reachable anonymously.
+    const authUser = await verifyToken(req.cookies.get('admin_token')?.value);
+    if (!authUser || authUser.role !== 'superadmin') {
+      logSecurityEvent({
+        eventType: 'UNAUTHORIZED_ACCESS_ATTEMPT',
+        ip: getClientIp(req),
+        endpoint: '/api/admin/seed',
+        details: { role: authUser?.role || 'anonymous' },
+      });
+      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    }
+
     await connectToDatabase();
 
-    // 1. Seed or Update Primary Super Admin (Kuldeep Maurya)
-    const adminEmail = 'kuldeepmaurya4296@gmail.com';
-    const hashedPassword = await hashPassword('Kuldeep@123');
-    const hashedSecurityPin = await hashPassword('638617');
+    // 1. Bootstrap the primary superadmin only when no user exists at all.
+    //    Credentials come from the environment - never hardcoded - and an
+    //    existing admin's password/PIN is never overwritten by a re-seed.
+    let adminSeedResult = 'Skipped (admin users already present)';
+    const existingUsers = await User.countDocuments();
 
-    await User.findOneAndUpdate(
-      { email: adminEmail },
-      {
-        name: 'Kuldeep Maurya',
-        email: adminEmail,
-        password: hashedPassword,
-        securityPin: hashedSecurityPin,
+    if (existingUsers === 0) {
+      const adminEmail = process.env.SEED_ADMIN_EMAIL;
+      const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+      const adminPin = process.env.SEED_ADMIN_PIN;
+
+      if (!adminEmail || !adminPassword) {
+        return NextResponse.json(
+          {
+            success: false,
+            message:
+              'No admin exists yet. Set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD (optionally SEED_ADMIN_PIN) in the environment before seeding.',
+          },
+          { status: 400 }
+        );
+      }
+
+      await User.create({
+        name: process.env.SEED_ADMIN_NAME || 'Administrator',
+        email: adminEmail.toLowerCase().trim(),
+        password: await hashPassword(adminPassword),
+        securityPin: adminPin ? await hashPassword(adminPin.trim()) : undefined,
         role: 'superadmin',
-        failedLoginAttempts: 0,
-        lockUntil: null,
-      },
-      { upsert: true, new: true }
-    );
+      });
+
+      adminSeedResult = `Bootstrapped superadmin ${adminEmail}`;
+    }
 
     // 2. Seed Jobs
     let seededJobsCount = 0;
@@ -147,7 +176,7 @@ export async function POST(req) {
       success: true,
       message: 'Database seeded successfully with primary admin and website data!',
       details: {
-        adminUser: `Created/Updated ${adminEmail} with 2-step security PIN`,
+        adminUser: adminSeedResult,
         seededJobs: seededJobsCount,
         seededProjects: seededProjectsCount,
         seededServices: seededServicesCount,
@@ -156,6 +185,6 @@ export async function POST(req) {
     });
   } catch (error) {
     console.error('Seed error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }

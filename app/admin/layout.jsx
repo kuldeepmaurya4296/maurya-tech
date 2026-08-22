@@ -64,17 +64,30 @@ export default function AdminLayout({ children }) {
         </div>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={mobileMenuOpen}
           className="p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
         >
           {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </header>
 
+      {/* Mobile drawer backdrop */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 z-40 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Sidebar Navigation */}
       <aside
-        className={`fixed md:sticky top-0 left-0 h-screen w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between z-50 transition-transform duration-300 md:translate-x-0 ${
+        aria-label="Admin navigation"
+        className={`fixed md:sticky top-0 left-0 h-screen w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between z-50 transition-[transform,visibility] duration-300 md:translate-x-0 max-md:invisible max-md:data-[open=true]:visible ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
+        data-open={mobileMenuOpen}
       >
         <div>
           {/* Logo & Header */}
@@ -92,6 +105,7 @@ export default function AdminLayout({ children }) {
             </div>
             <button
               onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close navigation menu"
               className="md:hidden text-slate-400 hover:text-white"
             >
               <X className="w-5 h-5" />
@@ -129,6 +143,7 @@ export default function AdminLayout({ children }) {
           <Link
             href="/"
             target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center justify-between px-3.5 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-cyan-400 hover:bg-slate-800/40 transition"
           >
             <span className="flex items-center gap-2">

@@ -28,7 +28,8 @@ export async function GET(req, { params }) {
 
     return NextResponse.json({ message: 'Project not found' }, { status: 404 });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('API error:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -62,7 +63,8 @@ export async function PUT(req, { params }) {
 
     return NextResponse.json({ success: true, project: updatedProject });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('API error:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -87,6 +89,7 @@ export async function DELETE(req, { params }) {
 
     return NextResponse.json({ success: true, message: 'Project deleted successfully' });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('API error:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }

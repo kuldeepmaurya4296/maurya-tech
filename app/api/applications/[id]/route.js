@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Application from '@/lib/models/Application';
 import { verifyToken } from '@/lib/auth';
-import { transporter, mailOptions } from '@/lib/emailService';
+import { sendMail, escapeHtml } from '@/lib/emailService';
 
 export async function GET(req, { params }) {
   try {
@@ -22,7 +22,8 @@ export async function GET(req, { params }) {
 
     return NextResponse.json({ success: true, application });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('API error:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -38,36 +39,41 @@ export async function PUT(req, { params }) {
     const body = await req.json();
     await connectToDatabase();
 
-    const updatedApplication = await Application.findByIdAndUpdate(id, body, { new: true });
+    // Only these fields are admin-updatable; notifyApplicant/emailMessage are
+    // request-only flags and must not be written to the document.
+    const updates = {};
+    if (typeof body.status === 'string') updates.status = body.status.slice(0, 50);
+    if (typeof body.notes === 'string') updates.notes = body.notes.slice(0, 3000);
+
+    const updatedApplication = await Application.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    });
     if (!updatedApplication) {
       return NextResponse.json({ message: 'Application not found' }, { status: 404 });
     }
 
     // Optional: send status update email if requested
     if (body.notifyApplicant && body.status) {
-      try {
-        await transporter.sendMail({
-          ...mailOptions,
-          to: updatedApplication.email,
-          subject: `Update regarding your application for ${updatedApplication.jobTitle} - Maurya Technologies`,
-          html: `
+      await sendMail({
+        to: updatedApplication.email,
+        subject: `Update regarding your application for ${updatedApplication.jobTitle} - Maurya Technologies`,
+        html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px;">
-              <h2>Dear ${updatedApplication.name},</h2>
-              <p>We wanted to give you an update on your application for the <strong>${updatedApplication.jobTitle}</strong> position.</p>
-              <p>Your current application status is: <strong>${body.status}</strong></p>
-              ${body.emailMessage ? `<p>${body.emailMessage}</p>` : ''}
+              <h2>Dear ${escapeHtml(updatedApplication.name)},</h2>
+              <p>We wanted to give you an update on your application for the <strong>${escapeHtml(updatedApplication.jobTitle)}</strong> position.</p>
+              <p>Your current application status is: <strong>${escapeHtml(body.status)}</strong></p>
+              ${body.emailMessage ? `<p>${escapeHtml(body.emailMessage)}</p>` : ''}
               <p>Best regards,<br/>Team Maurya Technologies</p>
             </div>
-          `,
-        });
-      } catch (mailErr) {
-        console.error('Failed to send status update email:', mailErr);
-      }
+        `,
+      });
     }
 
     return NextResponse.json({ success: true, application: updatedApplication });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('API error:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -85,6 +91,7 @@ export async function DELETE(req, { params }) {
     await Application.findByIdAndDelete(id);
     return NextResponse.json({ success: true, message: 'Application deleted successfully' });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('API error:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }

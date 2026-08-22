@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { BlogPostPage } from '@/components/pages/blog/BlogPostPage';
 import { posts as fallbackPosts } from '@/data/posts';
@@ -6,20 +7,22 @@ import Post from '@/lib/models/Post';
 
 export const revalidate = 60;
 
-async function getPostBySlug(slug) {
+const postFilter = (slug) => ({
+  $or: [
+    { slug },
+    { customId: slug },
+    { _id: slug.match(/^[0-9a-fA-F]{24}$/) ? slug : null },
+  ],
+});
+
+/**
+ * Read-only lookup, wrapped in React's `cache` so generateMetadata and the page
+ * component share a single database round-trip per request instead of two.
+ */
+const getPostBySlug = cache(async (slug) => {
   try {
     await connectToDatabase();
-    const post = await Post.findOneAndUpdate(
-      {
-        $or: [
-          { slug },
-          { customId: slug },
-          { _id: slug.match(/^[0-9a-fA-F]{24}$/) ? slug : null },
-        ],
-      },
-      { $inc: { viewsCount: 1 } },
-      { new: true }
-    );
+    const post = await Post.findOne(postFilter(slug)).lean();
 
     if (post) {
       const related = await Post.find({
@@ -45,6 +48,20 @@ async function getPostBySlug(slug) {
     .slice(0, 2);
 
   return { post: fallback, related };
+});
+
+/**
+ * The view counter is deliberately separate from the read above. It used to sit
+ * inside the lookup, which ran twice per request (metadata + page), so every
+ * visit was counted twice.
+ */
+async function recordView(slug) {
+  try {
+    await connectToDatabase();
+    await Post.updateOne(postFilter(slug), { $inc: { viewsCount: 1 } });
+  } catch (err) {
+    console.warn('Blog view counter skipped:', err.message);
+  }
 }
 
 export async function generateMetadata({ params }) {
@@ -77,6 +94,8 @@ export default async function BlogPost({ params }) {
   if (!post) {
     notFound();
   }
+
+  await recordView(slug);
 
   return <BlogPostPage post={post} relatedPosts={related} />;
 }
