@@ -11,6 +11,35 @@ if (!JWT_SECRET || JWT_SECRET.length < 32) {
 
 const secretKey = new TextEncoder().encode(JWT_SECRET);
 
+const SUPPORTED_COUNTRIES = ['in', 'us', 'uk'];
+
+function detectCountry(request) {
+  // 1. Explicit user cookie preference
+  const cookieCountry = request.cookies.get('preferred_country')?.value?.toLowerCase();
+  if (cookieCountry && SUPPORTED_COUNTRIES.includes(cookieCountry)) {
+    return cookieCountry;
+  }
+
+  // 2. Vercel / Cloudflare geo header
+  const geoCountry = (
+    request.headers.get('x-vercel-ip-country') ||
+    request.headers.get('cf-ipcountry') ||
+    ''
+  ).toLowerCase();
+
+  if (geoCountry === 'us') return 'us';
+  if (geoCountry === 'gb' || geoCountry === 'uk') return 'uk';
+  if (geoCountry === 'in') return 'in';
+
+  // 3. Accept-Language header hint
+  const acceptLang = request.headers.get('accept-language')?.toLowerCase() || '';
+  if (acceptLang.includes('en-us')) return 'us';
+  if (acceptLang.includes('en-gb')) return 'uk';
+
+  // 4. Default launch market
+  return 'in';
+}
+
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
   const method = request.method;
@@ -64,7 +93,6 @@ export async function middleware(request) {
 
     try {
       await jwtVerify(token, secretKey);
-      return NextResponse.next();
     } catch (err) {
       const loginUrl = new URL('/admin/login', request.url);
       loginUrl.searchParams.set('redirect', pathname);
@@ -85,9 +113,22 @@ export async function middleware(request) {
     }
   }
 
-  return NextResponse.next();
+  // 4. Country & Locale Negotiation (Non-Redirecting, SEO-Friendly)
+  const detectedCountry = detectCountry(request);
+  const response = NextResponse.next();
+  response.headers.set('x-user-country', detectedCountry);
+
+  if (!request.cookies.get('preferred_country')) {
+    response.cookies.set('preferred_country', detectedCountry, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365, // 1 year persistence
+      sameSite: 'lax',
+    });
+  }
+
+  return response;
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/:path*'],
+  matcher: ['/admin/:path*', '/api/:path*', '/', '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|webmanifest)$).*)'],
 };

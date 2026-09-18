@@ -5,6 +5,7 @@ import Application from '@/lib/models/Application';
 import Inquiry from '@/lib/models/Inquiry';
 import Job from '@/lib/models/Job';
 import Project from '@/lib/models/Project';
+import Order from '@/lib/models/Order';
 import { verifyToken } from '@/lib/auth';
 
 export async function GET(req) {
@@ -18,13 +19,32 @@ export async function GET(req) {
     await connectToDatabase();
 
     // 1. Overall counts
-    const [totalViews, totalApplications, totalInquiries, totalJobs, totalProjects] = await Promise.all([
+    const [
+      totalViews,
+      totalApplications,
+      totalInquiries,
+      qualifiedInquiries,
+      totalJobs,
+      totalProjects,
+      totalOrders,
+      revenueResult,
+      toolCompletions,
+    ] = await Promise.all([
       Analytics.countDocuments(),
       Application.countDocuments(),
       Inquiry.countDocuments(),
+      Inquiry.countDocuments({ isSpam: false }),
       Job.countDocuments({ isActive: true }),
       Project.countDocuments({ isPublished: true }),
+      Order.countDocuments({ status: 'paid' }),
+      Order.aggregate([
+        { $match: { status: 'paid' } },
+        { $group: { _id: null, total: { $sum: '$amount' } } },
+      ]),
+      Analytics.countDocuments({ eventType: 'tool_completed' }),
     ]);
+
+    const totalRevenue = revenueResult?.[0]?.total || 0;
 
     // 2. Recent applications
     const recentApplications = await Application.find().sort({ createdAt: -1 }).limit(5);
@@ -66,8 +86,12 @@ export async function GET(req) {
         totalViews,
         totalApplications,
         totalInquiries,
+        qualifiedInquiries,
         totalJobs,
         totalProjects,
+        totalOrders,
+        totalRevenue,
+        toolCompletions,
       },
       topPages: topPages.map((p) => ({ path: p._id, count: p.count })),
       devices: devices.map((d) => ({ name: d._id, value: d.count })),

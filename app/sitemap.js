@@ -5,12 +5,15 @@ import Post from '@/lib/models/Post';
 import { jobs as fallbackJobs } from '@/data/jobs';
 import { projects as fallbackProjects } from '@/data/projects';
 import { posts as fallbackPosts } from '@/data/posts';
+import { getToolsForCountry } from '@/lib/market/getTool';
+
+const SUPPORTED_COUNTRIES = ['in', 'us', 'uk'];
 
 export default async function sitemap() {
   const baseUrl = 'https://maurya-tech.com';
   const currentDate = new Date().toISOString();
 
-  // Static routes
+  // 1. Core agency static routes
   const staticRoutes = [
     '',
     '/about',
@@ -29,6 +32,68 @@ export default async function sitemap() {
     priority: route === '' ? 1.0 : 0.8,
   }));
 
+  // 2. Country Hubs and Directory Pages
+  const countryHubRoutes = [];
+  const countryToolRoutes = [];
+
+  for (const country of SUPPORTED_COUNTRIES) {
+    // Country homepage e.g. /in, /us, /uk
+    countryHubRoutes.push({
+      url: `${baseUrl}/${country}`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    });
+
+    // Country tools directory e.g. /in/tools
+    countryHubRoutes.push({
+      url: `${baseUrl}/${country}/tools`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    });
+
+    // Country guides directory e.g. /in/guides
+    countryHubRoutes.push({
+      url: `${baseUrl}/${country}/guides`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    });
+
+    // Individual calculators for this country
+    try {
+      const tools = await getToolsForCountry(country);
+      for (const tool of tools) {
+        countryToolRoutes.push({
+          url: `${baseUrl}/${country}/tools/${tool.slug}`,
+          lastModified: currentDate,
+          changeFrequency: 'weekly',
+          priority: 0.85,
+        });
+      }
+    } catch (toolErr) {
+      console.warn(`Sitemap tool lookup error for ${country}:`, toolErr.message);
+    }
+
+    // Individual guides for this country
+    try {
+      const { getGuidesForCountry } = await import('@/lib/market/getGuide');
+      const guides = await getGuidesForCountry(country);
+      for (const guide of guides) {
+        countryToolRoutes.push({
+          url: `${baseUrl}/${country}/guides/${guide.slug}`,
+          lastModified: currentDate,
+          changeFrequency: 'weekly',
+          priority: 0.8,
+        });
+      }
+    } catch (guideErr) {
+      console.warn(`Sitemap guide lookup error for ${country}:`, guideErr.message);
+    }
+  }
+
+  // 3. Dynamic jobs, projects, and blog articles
   let dynamicJobRoutes = [];
   let dynamicProjectRoutes = [];
   let dynamicBlogRoutes = [];
@@ -72,7 +137,7 @@ export default async function sitemap() {
     console.warn('Sitemap dynamic query fallback:', error.message);
   }
 
-  // Fallbacks if empty
+  // Fallbacks if DB query returned nothing
   if (dynamicJobRoutes.length === 0) {
     dynamicJobRoutes = (fallbackJobs.jobs || []).filter((j) => j.isActive).map((job) => ({
       url: `${baseUrl}/careers/${job.id}`,
@@ -100,5 +165,12 @@ export default async function sitemap() {
     }));
   }
 
-  return [...staticRoutes, ...dynamicJobRoutes, ...dynamicProjectRoutes, ...dynamicBlogRoutes];
+  return [
+    ...staticRoutes,
+    ...countryHubRoutes,
+    ...countryToolRoutes,
+    ...dynamicJobRoutes,
+    ...dynamicProjectRoutes,
+    ...dynamicBlogRoutes,
+  ];
 }

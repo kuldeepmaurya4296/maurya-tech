@@ -15,6 +15,9 @@ import {
   RefreshCw,
   PlusCircle,
   ExternalLink,
+  ShoppingBag,
+  Calculator,
+  ShieldCheck,
 } from 'lucide-react';
 import Link from 'next/link';
 import {
@@ -67,19 +70,42 @@ export default function AdminDashboardPage() {
     totalViews: 0,
     totalApplications: 0,
     totalInquiries: 0,
+    qualifiedInquiries: 0,
     totalJobs: 0,
     totalProjects: 0,
+    totalOrders: 0,
+    totalRevenue: 0,
+    toolCompletions: 0,
   };
 
   const statCards = [
     {
-      title: 'Total Visits / Views',
-      value: stats.totalViews,
-      icon: Eye,
+      title: 'Digital Product Revenue',
+      value: `₹${(stats.totalRevenue || 0).toLocaleString('en-IN')}`,
+      icon: ShoppingBag,
+      color: 'text-emerald-400',
+      bg: 'bg-emerald-500/10',
+      border: 'border-emerald-500/30',
+      subtext: `${stats.totalOrders || 0} verified orders paid`,
+    },
+    {
+      title: 'Qualified Leads',
+      value: stats.qualifiedInquiries !== undefined ? stats.qualifiedInquiries : stats.totalInquiries,
+      icon: ShieldCheck,
       color: 'text-cyan-400',
       bg: 'bg-cyan-500/10',
       border: 'border-cyan-500/20',
-      subtext: 'Across all pages',
+      subtext: 'Spam-filtered sales inquiries',
+      link: '/admin/inquiries',
+    },
+    {
+      title: 'Tool Calculations',
+      value: stats.toolCompletions || 0,
+      icon: Calculator,
+      color: 'text-amber-400',
+      bg: 'bg-amber-500/10',
+      border: 'border-amber-500/20',
+      subtext: '0ms client calculator completions',
     },
     {
       title: 'Job Applications',
@@ -88,28 +114,8 @@ export default function AdminDashboardPage() {
       color: 'text-indigo-400',
       bg: 'bg-indigo-500/10',
       border: 'border-indigo-500/20',
-      subtext: 'Received candidate profiles',
+      subtext: 'Candidate profiles received',
       link: '/admin/applications',
-    },
-    {
-      title: 'Contact Inquiries',
-      value: stats.totalInquiries,
-      icon: Mail,
-      color: 'text-emerald-400',
-      bg: 'bg-emerald-500/10',
-      border: 'border-emerald-500/20',
-      subtext: 'Project & partnership leads',
-      link: '/admin/inquiries',
-    },
-    {
-      title: 'Active Job Postings',
-      value: stats.totalJobs,
-      icon: Briefcase,
-      color: 'text-amber-400',
-      bg: 'bg-amber-500/10',
-      border: 'border-amber-500/20',
-      subtext: 'Open positions on /careers',
-      link: '/admin/jobs',
     },
   ];
 
@@ -122,10 +128,20 @@ export default function AdminDashboardPage() {
             Executive Overview
           </h1>
           <p className="text-slate-400 text-sm mt-1">
-            Real-time analytics, recruitment pipeline, and CMS status
+            Real-time business health, digital product revenue & pipeline
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <a
+            href="https://vercel.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-medium flex items-center gap-1.5 transition"
+            title="Open Vercel Real-time Web Traffic Analytics"
+          >
+            <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Vercel Analytics</span>
+          </a>
           <button
             onClick={fetchSummary}
             disabled={refreshing}

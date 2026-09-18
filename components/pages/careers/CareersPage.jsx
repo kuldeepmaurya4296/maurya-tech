@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   XCircle,
 } from 'lucide-react';
+import { CrossPromoBanner } from './CrossPromoBanner';
 
 export const CareersPage = ({ jobsData: serverJobsData }) => {
   const { jobsData: contextJobsData } = useData();
@@ -498,6 +499,11 @@ export const CareersPage = ({ jobsData: serverJobsData }) => {
                 </div>
               ))
             )}
+          </div>
+
+          {/* High-Converting Career Promotion & Free Tool Bridge */}
+          <div className="mt-12">
+            <CrossPromoBanner />
           </div>
         </div>
       </section>

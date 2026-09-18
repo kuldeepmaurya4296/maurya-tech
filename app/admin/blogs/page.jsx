@@ -10,9 +10,15 @@ import {
   Eye,
   Loader2,
   Calendar,
+  Globe,
+  ShieldCheck,
+  AlertCircle,
+  CheckCircle2,
+  Zap,
 } from 'lucide-react';
 import Link from 'next/link';
 import RichTextEditor from '@/components/ui/RichTextEditor';
+import { runQualityGate } from '@/lib/content/qualityGate';
 
 export default function AdminBlogsPage() {
   const [posts, setPosts] = useState([]);
@@ -27,6 +33,10 @@ export default function AdminBlogsPage() {
     excerpt: '',
     content: '',
     category: 'Engineering',
+    canonicalCountry: 'IN',
+    language: 'en-IN',
+    clusterType: 'spoke',
+    relatedToolSlug: '',
     tags: '',
     readTime: '5 min read',
     author: 'Maurya Technologies Team',
@@ -60,8 +70,12 @@ export default function AdminBlogsPage() {
       title: '',
       slug: '',
       excerpt: '',
-      content: '## Introduction\n\nWrite your blog article here using standard Markdown...',
+      content: '## Introduction\n\nWrite your blog article here using standard Markdown...\n\n| Feature | Details |\n|---|---|\n| Standard | Included |\n\n## Frequently Asked Questions\n\n### What are the key takeaways?\nDetailed answer goes here.',
       category: 'Engineering',
+      canonicalCountry: 'IN',
+      language: 'en-IN',
+      clusterType: 'spoke',
+      relatedToolSlug: '',
       tags: 'Tech, SaaS, React',
       readTime: '5 min read',
       author: 'Maurya Technologies Team',
@@ -80,6 +94,10 @@ export default function AdminBlogsPage() {
       excerpt: p.excerpt || '',
       content: p.content || '',
       category: p.category || 'Engineering',
+      canonicalCountry: p.canonicalCountry || 'IN',
+      language: p.language || 'en-IN',
+      clusterType: p.clusterType || 'spoke',
+      relatedToolSlug: p.relatedToolSlug || '',
       tags: Array.isArray(p.tags) ? p.tags.join(', ') : '',
       readTime: p.readTime || '5 min read',
       author: p.author || 'Maurya Technologies Team',
@@ -337,6 +355,106 @@ export default function AdminBlogsPage() {
                   className="w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-500"
                 />
               </div>
+
+              {/* International Market & Topic Cluster */}
+              <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700 space-y-3">
+                <div className="flex items-center gap-2 text-cyan-400 font-bold">
+                  <Globe className="w-4 h-4" />
+                  <span>Target Market, Language & SEO Clustering</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  <div>
+                    <label className="block text-slate-300 font-semibold mb-1">Target Country</label>
+                    <select
+                      value={formData.canonicalCountry}
+                      onChange={(e) => setFormData({ ...formData, canonicalCountry: e.target.value })}
+                      className="w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-500"
+                    >
+                      <option value="IN">🇮🇳 India (/in)</option>
+                      <option value="US">🇺🇸 USA (/us)</option>
+                      <option value="UK">🇬🇧 UK (/uk)</option>
+                      <option value="GLOBAL">🌐 Global (All)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 font-semibold mb-1">Language</label>
+                    <select
+                      value={formData.language}
+                      onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+                      className="w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-500"
+                    >
+                      <option value="en-IN">English (India)</option>
+                      <option value="en-US">English (US)</option>
+                      <option value="en-GB">English (UK)</option>
+                      <option value="hi">Hindi / Hinglish</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 font-semibold mb-1">Cluster Type</label>
+                    <select
+                      value={formData.clusterType}
+                      onChange={(e) => setFormData({ ...formData, clusterType: e.target.value })}
+                      className="w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-500"
+                    >
+                      <option value="spoke">Spoke Article</option>
+                      <option value="pillar">Pillar Guide (Core Hub)</option>
+                      <option value="tool_guide">Calculator Companion</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 font-semibold mb-1">Companion Tool Link</label>
+                    <select
+                      value={formData.relatedToolSlug}
+                      onChange={(e) => setFormData({ ...formData, relatedToolSlug: e.target.value })}
+                      className="w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-500"
+                    >
+                      <option value="">None (Standard Article)</option>
+                      <option value="ctc-calculator">CTC to In-Hand Calculator</option>
+                      <option value="hourly-to-annual-salary">Hourly to Annual Salary</option>
+                      <option value="emi-calculator">Loan EMI Calculator</option>
+                      <option value="percentage-calculator">Percentage Calculator</option>
+                      <option value="age-calculator">Age Calculator</option>
+                      <option value="ats-resume-checker">ATS Resume Checker</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quality Gate Live Auditor */}
+              {(() => {
+                const qg = runQualityGate(formData);
+                return (
+                  <div className={`p-4 rounded-xl border ${qg.passed ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-300' : 'bg-amber-950/30 border-amber-500/40 text-amber-300'} space-y-2`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 font-bold text-xs">
+                        <ShieldCheck className="w-4 h-4" />
+                        <span>Google Helpful Content & E-E-A-T Quality Gate</span>
+                      </div>
+                      <span className="font-extrabold text-sm">
+                        Score: {qg.score}/100 ({qg.status.toUpperCase().replace('_', ' ')})
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] pt-1">
+                      <div className="flex items-center gap-1.5">
+                        {qg.checks.minWordCount.passed ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <AlertCircle className="w-3.5 h-3.5 text-amber-400" />}
+                        <span>Words: {qg.checks.minWordCount.actual}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        {qg.checks.hasFaq.passed ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <AlertCircle className="w-3.5 h-3.5 text-amber-400" />}
+                        <span>Structured FAQ</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        {qg.checks.hasTable.passed ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <AlertCircle className="w-3.5 h-3.5 text-amber-400" />}
+                        <span>Markdown Table</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        {qg.checks.hasInternalToolLink.passed ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <AlertCircle className="w-3.5 h-3.5 text-amber-400" />}
+                        <span>Tool Link</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
 
               <div>
                 <label className="block text-slate-300 font-semibold mb-1">

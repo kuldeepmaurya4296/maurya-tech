@@ -15,6 +15,7 @@ import {
 import Link from 'next/link';
 import { JobApplicationForm } from './JobApplicationForm';
 import ShareButtons from '@/components/ui/ShareButtons';
+import { CrossPromoBanner } from './CrossPromoBanner';
 
 export const JobDetailPage = ({ job }) => {
   if (!job) return null;
@@ -187,6 +188,11 @@ export const JobDetailPage = ({ job }) => {
             <div className="lg:col-span-5 sticky top-28">
               <JobApplicationForm jobTitle={job.title} jobId={job.id || job.customId} />
             </div>
+          </div>
+
+          {/* Career Acceleration Cross-Promotion */}
+          <div className="mt-12">
+            <CrossPromoBanner />
           </div>
         </div>
       </section>
