@@ -22,6 +22,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get('type');
     const status = searchParams.get('status');
+    const spam = searchParams.get('spam'); // 'clean', 'spam', 'all'
 
     const filter = {};
     if (type && type !== 'all' && typeof type === 'string') {
@@ -29,6 +30,11 @@ export async function GET(req) {
     }
     if (status && status !== 'all' && typeof status === 'string') {
       filter.status = status.slice(0, 50);
+    }
+    if (spam === 'clean') {
+      filter.isSpam = { $ne: true };
+    } else if (spam === 'spam') {
+      filter.isSpam = true;
     }
 
     const inquiries = await Inquiry.find(filter).sort({ createdAt: -1 });

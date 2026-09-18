@@ -21,6 +21,7 @@ export default function AdminInquiriesPage() {
   const [loading, setLoading] = useState(true);
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [spamFilter, setSpamFilter] = useState('all');
   const [selectedInquiry, setSelectedInquiry] = useState(null);
 
   const fetchInquiries = async () => {
@@ -29,6 +30,7 @@ export default function AdminInquiriesPage() {
       let url = '/api/inquiries?';
       if (typeFilter !== 'all') url += `type=${typeFilter}&`;
       if (statusFilter !== 'All') url += `status=${statusFilter}&`;
+      if (spamFilter !== 'all') url += `spam=${spamFilter}&`;
 
       const res = await fetch(url);
       const data = await res.json();
@@ -44,7 +46,7 @@ export default function AdminInquiriesPage() {
 
   useEffect(() => {
     fetchInquiries();
-  }, [typeFilter, statusFilter]);
+  }, [typeFilter, statusFilter, spamFilter]);
 
   const handleUpdateStatus = async (inqId, newStatus) => {
     try {
@@ -147,21 +149,48 @@ export default function AdminInquiriesPage() {
           </button>
         </div>
 
-        {/* Status Pills */}
-        <div className="flex gap-1.5">
-          {STATUSES.map((st) => (
-            <button
-              key={st}
-              onClick={() => setStatusFilter(st)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
-                statusFilter === st
-                  ? 'bg-slate-200 text-slate-950 font-bold'
-                  : 'bg-slate-800/80 text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              {st}
-            </button>
-          ))}
+        {/* Status & Spam Filters */}
+        <div className="flex flex-wrap gap-2 items-center">
+          <div className="flex gap-1.5">
+            {STATUSES.map((st) => (
+              <button
+                key={st}
+                onClick={() => setStatusFilter(st)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
+                  statusFilter === st
+                    ? 'bg-slate-200 text-slate-950 font-bold'
+                    : 'bg-slate-800/80 text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
+
+          <div className="h-4 w-px bg-slate-800 hidden sm:block" />
+
+          {/* Spam Filter */}
+          <div className="flex gap-1.5 items-center">
+            {[
+              { id: 'all', label: 'All' },
+              { id: 'clean', label: 'Real Leads' },
+              { id: 'spam', label: 'Spam' },
+            ].map((sf) => (
+              <button
+                key={sf.id}
+                onClick={() => setSpamFilter(sf.id)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
+                  spamFilter === sf.id
+                    ? sf.id === 'spam'
+                      ? 'bg-rose-500 text-white font-bold'
+                      : 'bg-emerald-500 text-slate-950 font-bold'
+                    : 'bg-slate-800/80 text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {sf.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -210,13 +239,27 @@ export default function AdminInquiriesPage() {
                         }`}
                       >
                         <td className="p-4">
-                          <div className="font-semibold text-slate-100">{contactName}</div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-slate-100">{contactName}</span>
+                            {(inq.isSpam || inq.spamScore >= 60) && (
+                              <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                                Likely Spam
+                              </span>
+                            )}
+                          </div>
                           <div className="text-[11px] text-slate-400">{contactEmail}</div>
-                          {inq.companyName && (
-                            <div className="text-[11px] text-emerald-400 font-medium">
-                              {inq.companyName}
-                            </div>
-                          )}
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {inq.companyName && (
+                              <span className="text-[11px] text-emerald-400 font-medium">
+                                {inq.companyName}
+                              </span>
+                            )}
+                            {inq.sourceCountry && inq.sourceCountry !== 'Unknown' && (
+                              <span className="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono">
+                                {inq.sourceCountry}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="p-4">
                           <span className="capitalize px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-800 text-slate-300">
@@ -282,6 +325,28 @@ export default function AdminInquiriesPage() {
             </div>
 
             <div className="space-y-3 text-xs">
+              {/* Spam Risk Indicator */}
+              <div className="p-2.5 rounded-xl border border-slate-800 bg-slate-800/40 flex items-center justify-between">
+                <span className="text-slate-400 font-medium">Spam Risk Score:</span>
+                <span
+                  className={`font-bold px-2 py-0.5 rounded text-[11px] ${
+                    selectedInquiry.isSpam || selectedInquiry.spamScore >= 60
+                      ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                      : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                  }`}
+                >
+                  {selectedInquiry.spamScore || 0}%{' '}
+                  {selectedInquiry.isSpam || selectedInquiry.spamScore >= 60 ? '• Likely Spam' : '• Verified Clean'}
+                </span>
+              </div>
+
+              {selectedInquiry.sourceCountry && selectedInquiry.sourceCountry !== 'Unknown' && (
+                <div>
+                  <span className="text-slate-500 block font-semibold uppercase text-[10px]">Origin Country:</span>
+                  <span className="text-slate-200 font-mono">{selectedInquiry.sourceCountry}</span>
+                </div>
+              )}
+
               <div>
                 <span className="text-slate-500 block font-semibold uppercase text-[10px]">Email:</span>
                 <a

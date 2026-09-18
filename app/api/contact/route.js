@@ -27,6 +27,47 @@ function sanitizeInquiry(data) {
 }
 
 
+function calculateSpamScore(data) {
+  let score = 0;
+  const name = (data.name || data.contactName || data.fullName || '').trim();
+  const email = (data.email || data.workEmail || data.officialEmail || '').trim().toLowerCase();
+  const text = `${data.subject || ''} ${data.message || ''} ${data.details || ''}`.toLowerCase();
+
+  // Heuristic 1: Almost no vowels in name or excessive consonant clusters (random string bots)
+  if (name.length >= 4) {
+    const vowels = (name.match(/[aeiouyAEIOUY]/g) || []).length;
+    if (vowels / name.length < 0.15) score += 40;
+    if (/^[A-Z0-9\s_-]+$/.test(name) && name.length > 8) score += 25;
+  }
+
+  // Heuristic 2: Gmail dot trick or 4+ digits in email username
+  const localPart = email.split('@')[0] || '';
+  const dotCount = (localPart.match(/\./g) || []).length;
+  if (dotCount >= 3) score += 35;
+  if (/\d{4,}/.test(localPart)) score += 25;
+
+  // Heuristic 3: Common spam keywords
+  const spamKeywords = [
+    'crypto', 'bitcoin', 'forex', 'casino', 'viagra', 'seo ranking guarantee',
+    'backlinks package', 'guest post outreach', 'telegram:', 'whatsapp us for loan',
+    'adult dating', 'earn $', 'make money fast', 'poker', 'porn'
+  ];
+  if (spamKeywords.some((kw) => text.includes(kw))) {
+    score += 50;
+  }
+
+  // Heuristic 4: Cyrillic / Russian spam characters in general English agency form
+  if (/[\u0400-\u04FF]/.test(text) || /[\u0400-\u04FF]/.test(name)) {
+    score += 45;
+  }
+
+  // Heuristic 5: Excessive links (2+ URLs in message)
+  const links = (text.match(/https?:\/\//g) || []).length;
+  if (links >= 2) score += 30;
+
+  return Math.min(score, 100);
+}
+
 export async function POST(req) {
   try {
     // 1. Rate Limiting Check (Max 5 submissions per 5 minutes per IP)
@@ -50,7 +91,18 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: 'Invalid payload.' }, { status: 400 });
     }
 
-    // 2. Validate email depending on type
+    // 2. Honeypot check: If the hidden honeypot field is filled, it's 100% an automated bot
+    const honeypot = data.website_hp || data._hp || payload.honeypot;
+    if (honeypot && String(honeypot).trim().length > 0) {
+      console.warn(`[Anti-Spam] Bot trapped by honeypot field from IP ${clientIp}. Silently dropped.`);
+      // Return fake 200 OK so the bot script thinks it succeeded without retrying
+      return NextResponse.json(
+        { success: true, message: 'Message sent successfully. We will get back to you within 24 hours.' },
+        { status: 200 }
+      );
+    }
+
+    // 3. Validate email depending on type
     const contactEmail = data.email || data.workEmail || data.officialEmail;
     if (contactEmail && !EMAIL_REGEX.test(contactEmail.trim())) {
       return NextResponse.json(
@@ -59,12 +111,34 @@ export async function POST(req) {
       );
     }
 
-    // 3. Store in MongoDB
+    // 4. Calculate spam score & source context
+    const spamScore = calculateSpamScore(data);
+    const isSpam = spamScore >= 60;
+    const sourceCountry = req.headers.get('x-vercel-ip-country') || req.headers.get('cf-ipcountry') || 'Unknown';
+    const sourcePage = data.sourcePage || req.headers.get('referer') || '/contact';
+
+    // 5. Store in MongoDB with spam heuristics
     try {
       await connectToDatabase();
-      await Inquiry.create({ type: type || 'user', ...sanitizeInquiry(data) });
+      await Inquiry.create({
+        type: type || 'user',
+        ...sanitizeInquiry(data),
+        sourceCountry,
+        sourcePage,
+        spamScore,
+        isSpam,
+      });
     } catch (dbError) {
       console.error('MongoDB Inquiry Save Error:', dbError);
+    }
+
+    // 6. If flagged as spam, suppress the notification email to keep inbox clean
+    if (isSpam) {
+      console.warn(`[Anti-Spam] Inquiry flagged as likely spam (score: ${spamScore}/100). Email notification suppressed.`);
+      return NextResponse.json(
+        { success: true, message: 'Message sent successfully. We will get back to you within 24 hours.' },
+        { status: 200 }
+      );
     }
 
     // 4. Prepare and Send Email Notification

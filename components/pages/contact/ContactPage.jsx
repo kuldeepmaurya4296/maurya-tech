@@ -28,10 +28,10 @@ export function ContactPage({ contactData: serverContactData }) {
     const [loading, setLoading] = useState(false);
     const [successOpen, setSuccessOpen] = useState(false);
 
-    // Form States
-    const [userForm, setUserForm] = useState({ name: '', email: '', subject: '', message: '' });
-    const [companyForm, setCompanyForm] = useState({ contactName: '', workEmail: '', companyName: '', jobTitle: '', service: '', budget: '', details: '' });
-    const [salesForm, setSalesForm] = useState({ fullName: '', officialEmail: '', organization: '', partnershipType: '', message: '' });
+    // Form States with Honeypot field for bot protection
+    const [userForm, setUserForm] = useState({ name: '', email: '', subject: '', message: '', website_hp: '' });
+    const [companyForm, setCompanyForm] = useState({ contactName: '', workEmail: '', companyName: '', jobTitle: '', service: '', budget: '', details: '', website_hp: '' });
+    const [salesForm, setSalesForm] = useState({ fullName: '', officialEmail: '', organization: '', partnershipType: '', message: '', website_hp: '' });
 
     const handleFormSubmit = async (e, type, data) => {
         e.preventDefault();
@@ -49,9 +49,9 @@ export function ContactPage({ contactData: serverContactData }) {
             if (response.ok) {
                 setSuccessOpen(true);
                 // Reset forms
-                setUserForm({ name: '', email: '', subject: '', message: '' });
-                setCompanyForm({ contactName: '', workEmail: '', companyName: '', jobTitle: '', service: '', budget: '', details: '' });
-                setSalesForm({ fullName: '', officialEmail: '', organization: '', partnershipType: '', message: '' });
+                setUserForm({ name: '', email: '', subject: '', message: '', website_hp: '' });
+                setCompanyForm({ contactName: '', workEmail: '', companyName: '', jobTitle: '', service: '', budget: '', details: '', website_hp: '' });
+                setSalesForm({ fullName: '', officialEmail: '', organization: '', partnershipType: '', message: '', website_hp: '' });
             } else {
                 toast.error(result.message || 'Failed to send message. Please try again.');
             }
@@ -103,6 +103,19 @@ export function ContactPage({ contactData: serverContactData }) {
                                 {/* USER FORM */}
                                 <TabsContent value="user" className="space-y-6">
                                     <form onSubmit={(e) => handleFormSubmit(e, 'user', userForm)} className="space-y-4">
+                                        {/* Anti-Bot Honeypot Field */}
+                                        <div className="opacity-0 absolute -z-50 pointer-events-none h-0 w-0 overflow-hidden" aria-hidden="true">
+                                            <label htmlFor="user-form-hp">Leave this field blank</label>
+                                            <input
+                                                id="user-form-hp"
+                                                type="text"
+                                                name="website_hp"
+                                                tabIndex={-1}
+                                                autoComplete="off"
+                                                value={userForm.website_hp || ''}
+                                                onChange={e => setUserForm({ ...userForm, website_hp: e.target.value })}
+                                            />
+                                        </div>
                                         <div className="space-y-2">
                                             <h3 className="font-heading font-semibold text-lg">How can we help you?</h3>
                                             <p className="text-sm text-muted-foreground">For general questions and individual inquiries.</p>
@@ -144,6 +157,19 @@ export function ContactPage({ contactData: serverContactData }) {
                                 {/* COMPANY FORM */}
                                 <TabsContent value="company" className="space-y-6">
                                     <form onSubmit={(e) => handleFormSubmit(e, 'company', companyForm)} className="space-y-4">
+                                        {/* Anti-Bot Honeypot Field */}
+                                        <div className="opacity-0 absolute -z-50 pointer-events-none h-0 w-0 overflow-hidden" aria-hidden="true">
+                                            <label htmlFor="company-form-hp">Leave this field blank</label>
+                                            <input
+                                                id="company-form-hp"
+                                                type="text"
+                                                name="website_hp"
+                                                tabIndex={-1}
+                                                autoComplete="off"
+                                                value={companyForm.website_hp || ''}
+                                                onChange={e => setCompanyForm({ ...companyForm, website_hp: e.target.value })}
+                                            />
+                                        </div>
                                         <div className="space-y-2">
                                             <h3 className="font-heading font-semibold text-lg">Start a Project</h3>
                                             <p className="text-sm text-muted-foreground">Tell us about your business needs and project requirements.</p>
@@ -205,6 +231,19 @@ export function ContactPage({ contactData: serverContactData }) {
                                 {/* SALES / PARTNER FORM */}
                                 <TabsContent value="sales" className="space-y-6">
                                     <form onSubmit={(e) => handleFormSubmit(e, 'sales', salesForm)} className="space-y-4">
+                                        {/* Anti-Bot Honeypot Field */}
+                                        <div className="opacity-0 absolute -z-50 pointer-events-none h-0 w-0 overflow-hidden" aria-hidden="true">
+                                            <label htmlFor="sales-form-hp">Leave this field blank</label>
+                                            <input
+                                                id="sales-form-hp"
+                                                type="text"
+                                                name="website_hp"
+                                                tabIndex={-1}
+                                                autoComplete="off"
+                                                value={salesForm.website_hp || ''}
+                                                onChange={e => setSalesForm({ ...salesForm, website_hp: e.target.value })}
+                                            />
+                                        </div>
                                         <div className="space-y-2">
                                             <h3 className="font-heading font-semibold text-lg">Partnership Opportunities</h3>
                                             <p className="text-sm text-muted-foreground">Connect with our sales team for partnerships and enterprise solutions.</p>
